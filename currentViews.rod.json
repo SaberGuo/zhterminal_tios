@@ -1,0 +1,119 @@
+[
+	{
+		"module": "xdc.runtime.SysMin",
+		"view": "OutputBuffer"
+	},
+	{
+		"elements": [
+			{
+				"entry": "EAD=1\r\r\n"
+			},
+			{
+				"entry": "OK\r\n"
+			},
+			{
+				"entry": "AT_CIPHEAD done\n"
+			},
+			{
+				"entry": "AT+CIPSRIP=0\r\r\n"
+			},
+			{
+				"entry": "OK\r\n"
+			},
+			{
+				"entry": "AT_CIPSRIP done\n"
+			},
+			{
+				"entry": "AT+CIPOPEN=0,\"TCP\",\"120.77.34.29\",8989\r\r\n"
+			},
+			{
+				"entry": "OK\r\n"
+			},
+			{
+				"entry": "second:24,min:0\n"
+			},
+			{
+				"entry": "\r\n"
+			},
+			{
+				"entry": "+CIPOPEN: 0,0\r\n"
+			},
+			{
+				"entry": "_set_gsm_net done\n"
+			},
+			{
+				"entry": "gsm connect done\n"
+			},
+			{
+				"entry": "AT+CIPSEND=0,\r\r\n"
+			},
+			{
+				"entry": ">device_id:1,device_config_id:1,method:pull_param;\r\n"
+			},
+			{
+				"entry": "OK\r\n"
+			},
+			{
+				"entry": "\r\n"
+			},
+			{
+				"entry": "+CIPSEND: 0,49,49\r\n"
+			},
+			{
+				"entry": "+IPD179\r\n"
+			},
+			{
+				"entry": "pre size is 179\r\n"
+			},
+			{
+				"entry": "\n"
+			},
+			{
+				"entry": "size is 179\n"
+			},
+			{
+				"entry": "AT+CIPSEND=0,\r\r\n"
+			},
+			{
+				"entry": ">method:param_updated\r\n"
+			},
+			{
+				"entry": "OK\r\n"
+			},
+			{
+				"entry": "\r\n"
+			},
+			{
+				"entry": "+CIPSEND: 0,20,20\r\n"
+			},
+			{
+				"entry": "config is:\n"
+			},
+			{
+				"entry": "+CIPSEND: 0,20,20\r\n"
+			},
+			{
+				"entry": "\n"
+			},
+			{
+				"entry": "gsm disconnect done\n"
+			},
+			{
+				"entry": "Drive 0 is mounted\n"
+			},
+			{
+				"entry": "seconds is 1503014424\n"
+			},
+			{
+				"entry": "second:25,min:0\n"
+			},
+			{
+				"entry": "second:26,min:0\n"
+			},
+			{
+				"entry": "second:27,min:0\n"
+			}
+		]
+	}
+]
+
