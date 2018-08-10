@@ -38,15 +38,15 @@
 /* File name prefix for this filesystem for use with TI C RTS */
 char fatfsPrefix[] = "fat";
 
-const char col_data_file[] = "fat:"STR(DRIVE_NUM)":col_data.txt";
-const char config_file[] = "fat:"STR(DRIVE_NUM)":CONFIG.TXT";
-
+const char col_data_file[] = "fat:"STR(DRIVE_NUM)":cd";
+const char config_file[] = "fat:"STR(DRIVE_NUM)":CONF.TXT";
 const char image_list_file[] = "fat:"STR(DRIVE_NUM)":image_list.txt";
+
 const char image_pattern[]="*.JPG";
 
 unsigned char cpy_buff[CPY_BUFF_SIZE + 1];
 
-SDSPI_Handle sdspiHandle;
+SDSPI_Handle sdspiHandle = NULL;
 SDSPI_Params sdspiParams;
 
 
@@ -62,7 +62,7 @@ void enable_sd(){
 }
 
 void disable_sd(){
-    GPIO_write(MSP_EXP432P401R_GPIO_TFCARD_ENA, Board_GPIO_HIGH);
+    //GPIO_write(MSP_EXP432P401R_GPIO_TFCARD_ENA, Board_GPIO_HIGH);
 }
 
 void init_spisd(){
@@ -77,17 +77,17 @@ void init_spisd(){
 
 uint8_t open_sd(){
 
-    Semaphore_pend(semaphore_fat, BIOS_WAIT_FOREVER);
+    //Semaphore_pend(semaphore_fat, BIOS_WAIT_FOREVER);
     //enable_sd();
     sdspiHandle = SDSPI_open(Board_SDSPI0, DRIVE_NUM, &sdspiParams);
     if (sdspiHandle == NULL) {
         LOG_MSG("Error starting the SD card\n");
-        return 1;
+        return ZH_FAIL;
     }
     else {
         LOG_MSG("Drive %u is mounted\n", DRIVE_NUM);
     }
-    return 0;
+    return ZH_OK;
 }
 
 void test_sd(){
@@ -104,11 +104,11 @@ void test_sd(){
 uint8_t close_sd(){
     if(sdspiHandle){
         SDSPI_close(sdspiHandle);
-        Semaphore_post(semaphore_fat);
-        //disable_sd();
-        return 0;
+        //sdspiHandle = NULL;
+        //Semaphore_post(semaphore_fat);
+        return ZH_OK;
     }
-    return 1;
+    return ZH_FAIL;
 }
 uint8_t fn[20];
 

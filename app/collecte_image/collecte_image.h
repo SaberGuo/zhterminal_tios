@@ -12,6 +12,6 @@
 
 extern void init_collecte_image_task();
 extern void config_collecte_image_task(char* invl_param);
-
+extern uint8_t collecte_image_ex();
 
 #endif /* APP_COLLECTE_IMAGE_COLLECTE_IMAGE_H_ */

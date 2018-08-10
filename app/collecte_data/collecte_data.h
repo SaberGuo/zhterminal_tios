@@ -12,6 +12,6 @@
 
 extern void init_collecte_data_task();
 extern void config_collecte_data_task(char* invl_param);
-
+extern uint8_t collecte_data_ex();
 
 #endif /* APP_COLLECTE_DATA_COLLECTE_DATA_H_ */

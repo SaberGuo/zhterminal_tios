@@ -21,6 +21,6 @@ extern uint8_t update_time();
 extern uint8_t collecte_config(char * config_content);
 extern void construct_protocol_data(char *data_str, char *key, float value);
 /*about upload image*/
-void upload_image(char *file_name, DWORD file_size, uint32_t ts);
+void upload_image(char *key,uint8_t channel, char *file_name, DWORD file_size, uint32_t ts);
 
 #endif /* BASE_PROTOCOL_PROTOCOL_H_ */

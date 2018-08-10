@@ -11,7 +11,7 @@ var makeAssembly = false;
 var Executable = xdc.module('xdc.bld.Executable');
 
 var exeOpts = new Executable.Attrs({
-        cfgScript: 'C:/Users/saber/workspace_v7/zh_terminal_tios/zh_terminal_tios.cfg',
+        cfgScript: 'C:/Users/saber/workspace_v7/zh_terminal_tios_new/zh_terminal_tios.cfg',
         profile: 'release',
         cfgHome: 'xconfig_zh_terminal_tios',
 });
@@ -40,8 +40,8 @@ else {
 }
 
 var thisObj = {
-    cfg:        'C:/Users/saber/workspace_v7/zh_terminal_tios/zh_terminal_tios.cfg',
-    outputPath: 'C:/Users/saber/workspace_v7/zh_terminal_tios/.config/xconfig_zh_terminal_tios',
+    cfg:        'C:/Users/saber/workspace_v7/zh_terminal_tios_new/zh_terminal_tios.cfg',
+    outputPath: 'C:/Users/saber/workspace_v7/zh_terminal_tios_new/.config/xconfig_zh_terminal_tios',
     exeName:    'zh_terminal_tios' + suffix,
     exeIntName: 'zh_terminal_tios' + suffix.replace('.', '_'),
     targ:       targ,

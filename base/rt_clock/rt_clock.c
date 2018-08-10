@@ -28,6 +28,8 @@
 #define NVS_RTCLOCK_MON_OFFSET (NVS_RTCLOCK_OFFSET+17)
 #define NVS_RTCLOCK_YEAR_OFFSET (NVS_RTCLOCK_OFFSET+21)
 
+#define RESET_HOUR 8
+
 Watchdog_Handle watchdogHandle;
 extern NVS_Handle nvsHandle;
 
@@ -73,6 +75,10 @@ Void clockPrd(UArg arg){
     _time_task_s* p_tasks_info = (_time_task_s*)arg;
     uint8_t i_hour = 0,i_minute = 0;
     while(p_tasks_info!=NULL){
+        /*reboot*/
+        if(get_hour() == RESET_HOUR && get_minute() == 0 && get_second() == 0){
+            SysCtl_rebootDevice();
+        }
         /*judge task is executable*/
         for(i_hour=0;i_hour<p_tasks_info->task_hours_num;++i_hour){
             if(p_tasks_info->p_task_hours[i_hour] == get_hour()||p_tasks_info->p_task_hours[i_hour] == EVERY_TICK){
@@ -173,7 +179,6 @@ void tick(){
                         NVS_WRITE_POST_VERIFY);
 
     LOG_MSG("second:%d,min:%d\n",second,minute);
-    //LOG_MSG("MCLK = %d\n", CS_getMCLK());
 
 }
 
@@ -186,16 +191,32 @@ time_t get_seconds(){
     pTime->tm_mday = get_day();
     pTime->tm_hour = get_hour();
     pTime->tm_min = get_minute();
-    pTime->tm_sec = get_second()*10;
+    pTime->tm_sec = get_second();
 
     seconds = mktime(pTime);
-    //LOG_MSG("seconds is %d\n", seconds);
+    seconds = seconds-3600*8;
     return seconds;
+}
+
+void set_sencods_gps(int gps_year, int gps_month, int gps_day, int gps_hour, int gps_minute, int gps_second){
+    struct tm* pTime;
+    time_t seconds;
+    pTime = localtime(NULL);
+    pTime->tm_year = gps_year-1970;
+    pTime->tm_mon = gps_month-1;
+    pTime->tm_mday = gps_day;
+    pTime->tm_hour = gps_hour;
+    pTime->tm_min = gps_minute;
+    pTime->tm_sec = gps_second;
+    seconds = mktime(pTime);
+    set_seconds(seconds);
 }
 
 void set_seconds(uint32_t secs){
     struct tm *pTime;
+    //_tz.timezone = 8;
     LOG_MSG("set sec is %u", secs);
+    secs = secs+3600*8;
     time_t seconds = (time_t)secs;
     pTime = localtime(&seconds);
     year = pTime->tm_year+1970;
@@ -203,7 +224,7 @@ void set_seconds(uint32_t secs){
     day = pTime->tm_mday;
     hour = pTime->tm_hour;
     minute = pTime->tm_min;
-    second = pTime->tm_sec/10;
+    second = pTime->tm_sec;
 }
 
 /*get part*/

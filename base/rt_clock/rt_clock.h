@@ -52,6 +52,7 @@ extern void set_millenium();
 
 extern time_t get_seconds();
 extern void set_seconds(uint32_t secs);
+extern void set_sencods_gps(int gps_year, int gps_month, int gps_day, int gps_hour, int gps_minute, int gps_second);
 extern void delay(int num);
 
 #endif /* APP_RT_CLOCK_RT_CLOCK_H_ */

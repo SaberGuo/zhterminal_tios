@@ -9,16 +9,11 @@
 #define BASE_SENSORS_NH122_NH122_H_
 #include "Board.h"
 
-extern void nh122_init();
-extern uint8_t nh122_open();
-extern void nh122_close();
+extern uint8_t nh122_open(uint8_t num);
+extern uint8_t nh122_close(uint8_t num);
+extern uint8_t nh122_process(uint8_t num);
+extern float nh122_get_data(uint8_t num, uint8_t key_num);
 
-extern void nh122_process();
-extern float get_nh122_temperature();
-extern char* get_nh122_temp_key();
-extern float get_nh122_humidity();
-extern char* get_nh122_hum_key();
-extern float get_nh122_bar();
-extern char* get_nh122_bar_key();
+
 
 #endif /* BASE_SENSORS_NH122_NH122_H_ */

@@ -7,5 +7,5 @@
 #       or equal to the generated config header
 #
 linker.cmd: package/cfg/zh_terminal_tios_pem4f.xdl
-	$(SED) 's"^\"\(package/cfg/zh_terminal_tios_pem4fcfg.cmd\)\"$""\"C:/Users/saber/workspace_v7/zh_terminal_tios/.config/xconfig_zh_terminal_tios/\1\""' package/cfg/zh_terminal_tios_pem4f.xdl > $@
+	$(SED) 's"^\"\(package/cfg/zh_terminal_tios_pem4fcfg.cmd\)\"$""\"C:/Users/saber/workspace_v7/zh_terminal_tios_new/.config/xconfig_zh_terminal_tios/\1\""' package/cfg/zh_terminal_tios_pem4f.xdl > $@
 	-$(SETDATE) -r:max package/cfg/zh_terminal_tios_pem4f.h compiler.opt compiler.opt.defs

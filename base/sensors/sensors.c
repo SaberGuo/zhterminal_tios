@@ -4,24 +4,32 @@
  *  Created on: 2017Äê10ÔÂ23ÈÕ
  *      Author: saber
  */
+#include <base/sensors/wxt520/wxt520.h>
 #include "sensors.h"
 #include <string.h>
 #include <ti/sysbios/BIOS.h>
 #include <ti/sysbios/knl/Task.h>
 #include <ti/devices/msp432p4xx/driverlib/driverlib.h>
 #include <ti/drivers/NVS.h>
+#include <stdlib.h>
 
-#include "./vaisal/vaisal.h"
 #include "./davis_rain/davis_rain.h"
 #include "./mec10/mec10.h"
 #include "./nhzd10/nhzd10.h"
 #include "./nhfx46au/nhfx46au.h"
 #include "./nhfs45bu/nhfs45bu.h"
 #include "./nh122/nh122.h"
+#include "./wxt520/wxt520.h"
+#include "./th10s/th10s.h"
+#include "./ms10_volt/ms10_volt.h"
+#include "./csf11/csf11.h"
+#include "./zwinsoft/zwinsoft.h"
 
+#include "base/conf_parser/conf_parser.h"
 #include "base/rt_clock/rt_clock.h"
 #include "base/protocol/protocol.h"
 #include "base/power/power.h"
+#include "base/cJSON/cJSON.h"
 
 #define NVS_SENSORS_OFFSET 0x1000
 #define NVS_SENSORS_PWBUF_OFFSET (NVS_SENSORS_OFFSET+1)
@@ -35,6 +43,108 @@ char sensor_data_buffer[MAX_SENSOR_DATA][SENSOR_BUFFER_SIZE];
 uint8_t sensor_sign = 0;
 uint8_t p_w_buffer = 0;
 uint8_t p_r_buffer = 0;
+
+const char sensor_type_strs[SENSOR_TYPE_COUNT][20]={
+                                   "davis_rain",
+                                   "mec10",
+                                   "nh122",
+                                   "nhfs45bu",
+                                   "nhfx46au",
+                                   "nhzd10",
+                                   "th10s",
+                                   "ms10vt",
+                                   "ms10vh",
+                                   "wxt520",
+                                   "csf11",
+                                   "zwinsoft"
+};
+
+_sensor_config sensor_configs[SENSOR_TYPE_COUNT]={
+                                                  /*davis rain*/
+                                                  {
+                                                   .sensor_open = davis_open,
+                                                   .sensor_close = davis_close,
+                                                   .sensor_process = davis_process,
+                                                   .sensor_get_data = davis_get_data,
+                                                  },
+                                                  /*mec10*/
+                                                  {
+                                                   .sensor_open = mec10_open,
+                                                   .sensor_close = mec10_close,
+                                                   .sensor_process = mec10_process,
+                                                   .sensor_get_data = mec10_get_data,
+                                                  },
+                                                  /*nh122*/
+                                                  {
+                                                   .sensor_open = nh122_open,
+                                                   .sensor_close = nh122_close,
+                                                   .sensor_process = nh122_process,
+                                                   .sensor_get_data = nh122_get_data
+                                                  },
+                                                  /*nhfs45bu*/
+                                                  {
+                                                   .sensor_open = nhfs45bu_open,
+                                                   .sensor_close = nhfs45bu_close,
+                                                   .sensor_process = nhfs45bu_process,
+                                                   .sensor_get_data = nhfs45bu_get_data,
+                                                  },
+                                                  /*nhfx46au*/
+                                                  {
+                                                   .sensor_open = nhfx46au_open,
+                                                   .sensor_close = nhfx46au_close,
+                                                   .sensor_process = nhfx46au_process,
+                                                   .sensor_get_data = nhfx46au_get_data
+                                                  },
+                                                  /*nhzd10*/
+                                                  {
+                                                   .sensor_open = nhzd10_open,
+                                                   .sensor_close = nhzd10_close,
+                                                   .sensor_process = nhzd10_process,
+                                                   .sensor_get_data = nhzd10_get_data
+                                                  },
+                                                  /*th10s*/
+                                                  {
+                                                   .sensor_open =th10s_open,
+                                                   .sensor_close = th10s_close,
+                                                   .sensor_process = th10s_process,
+                                                   .sensor_get_data = th10s_get_data,
+                                                  },
+                                                  /*ms10vt*/
+                                                  {
+                                                   .sensor_open =ms10_volt_temp_open,
+                                                   .sensor_close = ms10_volt_temp_close,
+                                                   .sensor_process = ms10_volt_temp_process,
+                                                   .sensor_get_data = ms10_volt_temp_get_data,
+                                                  },
+                                                  /*ms10vh*/
+                                                  {
+                                                   .sensor_open =ms10_volt_hum_open,
+                                                   .sensor_close = ms10_volt_hum_close,
+                                                   .sensor_process = ms10_volt_hum_process,
+                                                   .sensor_get_data = ms10_volt_hum_get_data,
+                                                  },
+                                                  /*wxt520*/
+                                                  {
+                                                    .sensor_open = wxt520_open,
+                                                    .sensor_close = wxt520_close,
+                                                    .sensor_process = wxt520_process,
+                                                    .sensor_get_data = wxt520_get_data
+                                                  },
+                                                  /*csf11*/
+                                                  {
+                                                    .sensor_open = csf11_open,
+                                                    .sensor_close = csf11_close,
+                                                    .sensor_process = csf11_process,
+                                                    .sensor_get_data = csf11_get_data
+                                                  },
+                                                  /*zwinsoft*/
+                                                  {
+                                                   .sensor_open = zwinsoft_open,
+                                                   .sensor_close = zwinsoft_close,
+                                                   .sensor_process = zwinsoft_process,
+                                                   .sensor_get_data = zwinsoft_get_data
+                                                  }
+};
 
 void read_nvs_sensors(void){
     NVS_read(nvsHandle, NVS_SENSORS_OFFSET, (void *) sensor_sign, sizeof(sensor_sign));
@@ -57,22 +167,21 @@ void write_nvs_sensors(void){
 
 }
 
-void init_sensors(void){
+
+void sensors_init(void){
     read_nvs_sensors();
-    nh122_init();
-	davis_rain_init();
+    di_init(0);
 }
 
-void open_sensors(void){
-    //vaisal_open();
-    //mec10_init();
-    //UART_init();
+void sensors_open(void){
     ADC_init();
-    nh122_open();
-    nhzd10_init();
-    nhfx46au_init();
-    nhfs45bu_init();
-
+    /*port init*/
+    _data_item* pdi = g_config.data_items;
+    while(pdi!=NULL){
+        sensor_configs[pdi->sensor_type].sensor_open(pdi->port_num);
+        pdi = pdi->next_data_item;
+    }
+    /*power ctrl*/
     power_enable(ENA_DC5V);
     power_enable(ENA_DC33V);
     set_relay(RELAY_K_IO);
@@ -80,97 +189,55 @@ void open_sensors(void){
     set_relay(RELAY_K_SENSOR);
 }
 
-void col_sensors(void){
-
-	//vaisal_process();
-    //mec10_process();
-    nh122_process();
+void sensors_process(void){
+    _data_item* pdi = g_config.data_items;
+    while(pdi!=NULL){
+       sensor_configs[pdi->sensor_type].sensor_process(pdi->port_num);
+       pdi = pdi->next_data_item;
+    }
 
 }
-
-char tbuf[100];
-float res;
-
-char *construct_data_str(){
-	char *pbuf = sensor_data_buffer[p_w_buffer];
-	char *pkey;
-	memset(pbuf,0,MAX_BUFFER);
-	/*vaisal part*/
-	/*
-	 uint8_t i = 0;
-	 for(i = 0;i<TH_DATAS_NUM;++i){
-	    memset(tbuf,0,100);
-	    construct_protocol_data(tbuf, vaisal_datas[i].sign, vaisal_datas[i].avg_value);
-		pbuf = strcat(pbuf, tbuf);
-		pbuf = strcat(pbuf," ");
-	}
-	memset(tbuf,0,100);*/
-	/*rainfall part*/
-	/*construct_protocol_data(tbuf, get_davis_rain_key(), get_davis_rain());
-	pbuf = strcat(pbuf, tbuf);
-
-    */
-	/*mec10 soil poart*/
-	/*construct_protocol_data(tbuf,get_mec10_temp_key(), get_mec10_temperature());
-	pbuf = strcat(pbuf, tbuf);
-	pbuf = strcat(pbuf," ");
-	construct_protocol_data(tbuf,get_mec10_hum_key(), get_mec10_humidity());
-	pbuf = strcat(pbuf, tbuf);
-	pbuf = strcat(pbuf," ");
-	construct_protocol_data(tbuf,get_mec10_ec_key(), get_mec10_ec());
-	pbuf = strcat(pbuf, tbuf);
-	pbuf = strcat(pbuf," ");
-	memset(tbuf,0,100);*/
-	res = get_nh122_temperature();
-	pkey = get_nh122_temp_key();
-	construct_protocol_data(tbuf, pkey, res);
-	pbuf = strcat(pbuf, tbuf);
-	pbuf = strcat(pbuf," ");
-	memset(tbuf,0,100);
-	res = get_nh122_humidity();
-	pkey = get_nh122_hum_key();
-	construct_protocol_data(tbuf, pkey, res);
-	pbuf = strcat(pbuf, tbuf);
-	pbuf = strcat(pbuf," ");
-	memset(tbuf,0,100);
-	res = get_nh122_bar();
-	pkey = get_nh122_bar_key();
-	construct_protocol_data(tbuf,pkey, res);
-	pbuf = strcat(pbuf, tbuf);
-	pbuf = strcat(pbuf," ");
-	memset(tbuf,0,100);
-	res = get_nhzd10_value();
-	pkey = get_nhzd10_key();
-	construct_protocol_data(tbuf,pkey, res);
-	pbuf = strcat(pbuf, tbuf);
-	pbuf = strcat(pbuf," ");
-	memset(tbuf,0,100);
-	pkey = get_nhfx46au_key();
-	res = get_nhfx46au_value();
-	construct_protocol_data(tbuf,pkey, res);
-	pbuf = strcat(pbuf, tbuf);
-	pbuf = strcat(pbuf," ");
-	memset(tbuf,0,100);
-	pkey =get_nhfs45bu_key();
-	res = get_nhfs45bu_value();
-	construct_protocol_data(tbuf,pkey, res);
-	pbuf = strcat(pbuf, tbuf);
-	memset(tbuf,0,100);
-
-
-
-	p_w_buffer = (++p_w_buffer)%MAX_SENSOR_DATA;
-	write_nvs_sensors();
-	return pbuf;
+char *sensors_construct(void){
+    cJSON * root = cJSON_CreateObject();
+    cJSON * packages = cJSON_CreateObject();
+    cJSON * package = cJSON_CreateObject();
+    cJSON_AddItemToObject(root, "device_id", cJSON_CreateNumber(g_config.device_id));
+    cJSON_AddItemToObject(root, "device_config_id", cJSON_CreateNumber(g_config.device_config_id));
+    cJSON_AddItemToObject(root, "method", cJSON_CreateString("push_data"));
+    cJSON_AddItemToObject(root, "package", packages);
+    char time_str[20];
+    sprintf(time_str,"%d",get_seconds());
+    cJSON_AddItemToObject(packages, time_str,package);
+    _data_item* pdi = g_config.data_items;
+    int i = 0;
+    while(pdi!=NULL){
+        for(i = 0;i<MAX_KEYS;++i){
+            if(strlen(pdi->keys[i])>0){
+                cJSON * item = cJSON_CreateObject();
+                cJSON_AddItemToObject(item,
+                                      "value",
+                                      cJSON_CreateNumber(sensor_configs[pdi->sensor_type].sensor_get_data(pdi->port_num, i)));
+                cJSON_AddItemToObject(package,pdi->keys[i],item);
+            }
+        }
+        pdi = pdi->next_data_item;
+    }
+    char *pbuf = sensor_data_buffer[p_w_buffer];
+    memset(pbuf,0,SENSOR_BUFFER_SIZE);
+    sprintf(pbuf,"%s",cJSON_PrintUnformatted(root));
+    cJSON_Delete(root);
+    p_w_buffer = (++p_w_buffer)%MAX_SENSOR_DATA;
+    write_nvs_sensors();
+    return pbuf;
 }
 
-char *get_data_str(){
-	char *pbuf = NULL;
-	if(p_r_buffer != p_w_buffer){
-		pbuf = sensor_data_buffer[p_r_buffer];
-		p_r_buffer = (++p_r_buffer)%MAX_SENSOR_DATA;
-	}
-	return pbuf;
+char *sensor_get_data_str(){
+    char *pbuf = NULL;
+    if(p_r_buffer != p_w_buffer){
+        pbuf = sensor_data_buffer[p_r_buffer];
+        p_r_buffer = (++p_r_buffer)%MAX_SENSOR_DATA;
+    }
+    return pbuf;
 }
 
 void reset_ad_ports(){
@@ -213,28 +280,23 @@ void reset_uart_ports(){
     MAP_GPIO_setOutputLowOnPin(GPIO_PORT_P9, GPIO_PIN6);
     MAP_GPIO_setOutputLowOnPin(GPIO_PORT_P9, GPIO_PIN7);
 }
-void close_sensors(){
-	//vaisal_close();
-    //mec10_close();
-
+void sensors_close(){
 
     reset_relay(RELAY_K_SENSOR);
-    Task_sleep(200);
+    Task_sleep(LITTLE_TIME);
     reset_relay(RELAY_K_IO);
-    Task_sleep(200);
+    Task_sleep(LITTLE_TIME);
     power_disable(ENA_DC5V);
-    Task_sleep(200);
+    Task_sleep(LITTLE_TIME);
     power_disable(ENA_DC33V);
 
 
-    nh122_close();
+    _data_item* pdi = g_config.data_items;
+    while(pdi!=NULL){
+        sensor_configs[pdi->sensor_type].sensor_close(pdi->port_num);
+        pdi = pdi->next_data_item;
+    }
 
     reset_ad_ports();
     reset_uart_ports();
-
-}
-
-uint8_t get_sensor_num(){
-    //return TH_DATAS_NUM+1;
-    return 6;
 }

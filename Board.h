@@ -52,6 +52,7 @@ extern "C" {
 
 #include "MSP_EXP432P401R.h"
 
+#include "base/debuger/debuger.h"
 
 #define SERIAL_READ  1
 #define SERIAL_WRITE 2
@@ -213,6 +214,9 @@ extern "C" {
 #define ENABLE_DEBUG
 #ifdef ENABLE_DEBUG
 #define LOG_MSG System_printf
+//#define LOG_MSG(...) fprintf(fl,"Filename %s, Function %s, Line %d > ", __FILE__, __FUNCTION__, __LINE__); \
+                            fprintf(fl,__VA_ARGS__); \
+                            fprintf(fl,"\n");
 #else
 #define LOG_MSG(...) /*empty*/
 #endif

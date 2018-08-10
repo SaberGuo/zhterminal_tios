@@ -10,9 +10,9 @@
 
 #include "Board.h"
 
-extern void davis_rain_init(void);
+extern uint8_t davis_open(uint8_t num);
+extern uint8_t davis_close(uint8_t num);
+extern uint8_t davis_process(uint8_t num);
+extern float davis_get_data(uint8_t num, uint8_t key_num);
 
-extern float get_davis_rain(void);
-
-extern char *get_davis_rain_key(void);
 #endif /* BASE_SENSORS_DAVIS_RAIN_DAVIS_RAIN_H_ */

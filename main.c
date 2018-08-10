@@ -58,6 +58,8 @@
 #include "base/fatsd/fatsd.h"
 #include "base/power/power.h"
 #include "base/gsm/gsm.h"
+#include "base/conf_parser/conf_parser.h"
+#include "base/debuger/debuger.h"
 
 #include "app/collecte_config/collecte_config.h"
 #include "app/collecte_data/collecte_data.h"
@@ -71,6 +73,7 @@ extern _time_task_s collecte_image_task_info;
 extern _time_task_s upload_data_task_info;
 extern _time_task_s update_time_task_info;
 extern Watchdog_Handle watchdogHandle;
+
 
 NVS_Handle nvsHandle;
 
@@ -97,13 +100,8 @@ void gpio_clear(){
 
     GPIO_write(MSP_EXP432P401R_GPIO_5V_ENA, Board_GPIO_HIGH);
     GPIO_write(MSP_EXP432P401R_GPIO_33V_ENA, Board_GPIO_HIGH);
-    GPIO_write(MSP_EXP432P401R_GPIO_TFCARD_ENA, Board_GPIO_HIGH);
+    //GPIO_write(MSP_EXP432P401R_GPIO_TFCARD_ENA, Board_GPIO_HIGH);
 
-    /*GPIO_write(MSP_EXP432P401R_GPIO_P1_4,Board_GPIO_LOW);
-    GPIO_write(MSP_EXP432P401R_GPIO_P1_5,Board_GPIO_LOW);
-    GPIO_write(MSP_EXP432P401R_GPIO_P1_6,Board_GPIO_LOW);
-    GPIO_write(MSP_EXP432P401R_GPIO_P1_7,Board_GPIO_LOW);
-    GPIO_write(MSP_EXP432P401R_GPIO_P3_1,Board_GPIO_LOW);*/
     GPIO_write(MSP_EXP432P401R_GPIO_LED,Board_GPIO_HIGH);
 
 
@@ -170,7 +168,7 @@ void other_clear(){
 
 }
 void mainThread(UArg arg0){
-
+    Watchdog_Params params;
 
     power_enable(ENA_DC5V);
     power_enable(ENA_DC33V);
@@ -192,46 +190,71 @@ void mainThread(UArg arg0){
     if(open_sd() == 1){
        LOG_MSG("main open sd fail!\n");
     }
-
+    Task_sleep(200);
     config_all_tasks();
     close_sd();
     disable_sd();
-
+    Task_sleep(200);
+    /*debug for once*/
+    /*update time*/
+    //gsm_open();
+    //update_time_ex();
+    //gsm_close();
+    /*config update*/
+    //gsm_open();
+    //collecte_config_ex();
+    //gsm_close();
+    /*collect data*/
+    //collecte_data_ex();
+    /*update data*/
+    //gsm_open();
+    //upload_data_ex();
+    //gsm_close();
+    /*collect image*/
+    collecte_image_ex();
     /*init tasks*/
     init_collecte_data_task();
-    init_upload_data_task();
-    init_collecte_config_task();
+    //init_upload_data_task();
+    //init_collecte_config_task();
     init_collecte_image_task();
-    init_update_time_task();
+    //init_update_time_task();
 
     /*add time task list*/
     add_time_task(&collecte_data_task_info);
-    add_time_task(&upload_data_task_info);
-    add_time_task(&collecte_config_task_info);
+    //add_time_task(&upload_data_task_info);
+    //add_time_task(&collecte_config_task_info);
     add_time_task(&collecte_image_task_info);
-    add_time_task(&update_time_task_info);
+    //add_time_task(&update_time_task_info);
+
+
+
+
+    Watchdog_Params_init(&params);
+    params.resetMode = Watchdog_RESET_ON;
+    watchdogHandle = Watchdog_open(Board_WATCHDOG0, &params);
     /*
     *  normal BIOS programs, would call BIOS_start() to enable interrupts
     *  and start the scheduler and kick BIOS into gear.  But, this program
     *  is a simple sanity test and calls BIOS_exit() instead.
     */
     init_rt_clock();
-    //Power_setPerformanceLevel(0);
+    gsm_open();
+    update_time_ex();
+    gsm_close();
     other_clear();
 }
 
-/* Stack size in bytes */
-//char main_task_stack[MAX_BUFFER];
-//Task_Struct main_task_struct;
 /*
  *  ======== main ========
  */
 int main(){
-    Task_Params taskParams;
+    //Task_Params taskParams;
     /* Call driver init functions */
     Board_initGeneral();
-    Watchdog_Params params;
+
     NVS_Params nvsParams;
+
+
     SPI_init();
     UART_init();
     GPIO_init();
@@ -244,12 +267,11 @@ int main(){
 
 
     Watchdog_init();
-    Watchdog_Params_init(&params);
-    params.resetMode = Watchdog_RESET_ON;
-    watchdogHandle = Watchdog_open(Board_WATCHDOG0, &params);
 
+
+    init_config_heap();
     init_spisd();
-    init_sensors();
+    sensors_init();
     init_gsm();
     gpio_clear();
 

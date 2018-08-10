@@ -9,11 +9,10 @@
 #define BASE_SENSORS_NHFS45BU_NHFS45BU_H_
 #include "Board.h"
 
-extern void nhfs45bu_init(void);
-
-extern float get_nhfs45bu_value(void);
-
-extern char *get_nhfs45bu_key(void);
+extern uint8_t nhfs45bu_open(uint8_t num);
+extern uint8_t nhfs45bu_close(uint8_t num);
+extern uint8_t nhfs45bu_process(uint8_t num);
+extern float nhfs45bu_get_data(uint8_t num, uint8_t key_num);
 
 
 

@@ -12,5 +12,5 @@
 
 extern void init_upload_data_task();
 extern void config_upload_data_task(char* invl_param);
-
+extern uint8_t upload_data_ex();
 #endif /* APP_UPLOAD_DATA_UPLOAD_DATA_H_ */

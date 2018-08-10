@@ -28,7 +28,7 @@ uint8_t crc_16(const uint8_t* Data , uint32_t length){
     CalculatedCRC = Reg_CRC<<8|Temp_reg;
 
     if(CalculatedCRC == rec_crc)
-        return 0;
+        return ZH_OK;
     else
-        return 1;
+        return ZH_FAIL;
 }

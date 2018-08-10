@@ -704,7 +704,7 @@ const uint_least8_t NVS_count = MSP_EXP432P401R_NVSCOUNT;
  */
 const PowerMSP432_ConfigV1 PowerMSP432_config = {
     .policyInitFxn = &PowerMSP432_initPolicy,
-    .policyFxn = &PowerMSP432_deepSleepPolicy,
+    .policyFxn = &PowerMSP432_sleepPolicy,
     .initialPerfLevel = 3,
     .enablePolicy = true,
     .enablePerf = true,
@@ -920,6 +920,12 @@ const UARTMSP432_BaudrateConfig uartMSP432Baudrates[] = {
     {115200, 12000000,  6,  8,  32, 1},
     {115200, 6000000,   3,  4,   2, 1},
     {115200, 3000000,   1, 10,   0, 1},
+    {460800, 12000000, 1, 10, 0, 1},
+    {460800, 24000000, 3, 4, 2, 1},
+    {460800, 48000000, 6, 8, 32, 1},
+    {230400, 48000000, 13, 0, 37, 1},
+    {230400, 24000000, 6, 8, 32, 1},
+    {230400, 12000000, 3, 4, 2, 1},
     {38400, 12000000,   19, 8,   85, 1},
     {38400, 6000000,   9, 12,   34, 1},
     {38400, 3000000,   4, 14,   8, 1},
@@ -1007,13 +1013,6 @@ WatchdogMSP432_Object watchdogMSP432Objects[MSP_EXP432P401R_WATCHDOGCOUNT];
 
 const WatchdogMSP432_HWAttrs
     watchdogMSP432HWAttrs[MSP_EXP432P401R_WATCHDOGCOUNT] = {
-    {
-        .baseAddr = WDT_A_BASE,
-        .intNum = INT_WDT_A,
-        .intPriority = (~0),
-        .clockSource = WDT_A_CLOCKSOURCE_ACLK,
-        .clockDivider = WDT_A_CLOCKDIVIDER_512K
-    },
     {
         .baseAddr = WDT_A_BASE,
         .intNum = INT_WDT_A,

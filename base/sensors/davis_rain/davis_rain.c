@@ -10,29 +10,25 @@
 
 /* Driver Header files */
 #include <ti/drivers/GPIO.h>
+#include "../di/di.h"
 
 #include "davis_rain.h"
 #define RAIN_UINT 0.2
-static uint32_t rainfall_value = 0;
-char davis_rain_key[] = "rainfall";
 
-void di_fxn(uint_least8_t index){
-	rainfall_value++;
+
+uint8_t davis_open(uint8_t num){
+    /*nothing*/
+    return ZH_OK;
+}
+uint8_t davis_close(uint8_t num){
+    clear_di_value(num);
+    return ZH_OK;
+}
+uint8_t davis_process(uint8_t num){
+    /*nothing*/
+    return ZH_OK;
+}
+float davis_get_data(uint8_t num, uint8_t key_num){
+    return get_di_value(num)*RAIN_UINT;
 }
 
-void davis_rain_init(){
-	GPIO_write(Board_GPIO_DI_POWER, Board_GPIO_HIGH);
-	GPIO_setCallback(Board_GPIO_DI, di_fxn);
-}
-
-void clear_davis_rain(void){
-    rainfall_value = 0;
-}
-
-float get_davis_rain(void){
-    return rainfall_value*RAIN_UINT;
-}
-
-char *get_davis_rain_key(void){
-    return davis_rain_key;
-}

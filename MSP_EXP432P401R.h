@@ -57,16 +57,28 @@ extern "C" {
 #define MSP_EXP432P401R_GPIO_HIGH  (1)
 
 #define TASKSTACKSIZE 2048
+#define TASKSTACKSIZEBIG 2048
 #define EVERY_TICK 0xff
-#define SENSOR_BUFFER_SIZE 256
-#define MAX_SENSOR_DATA 5
-#define MAX_UPLOAD_SIZE 5
+#define SENSOR_BUFFER_SIZE 512
+#define MAX_SENSOR_DATA 3
+#define MAX_UPLOAD_SIZE 3
 #define MAX_BUFFER 1024
-#define MAX_BUFFER_P 1024
+#define MAX_DM_BUFFER 256
+#define MAX_BUFFER_P 768
 #define SENSOR_BUFFER 256
 
+#define MAX_KEYS 8
+#define MAX_KEY_LEN 20
 
+#define ZH_OK 0
+#define ZH_FAIL    1
 
+#define LITTLE_TIME 200
+#define HUGE_TIME 2000
+
+/*resource part limits*/
+#define MAX_UART_NUM 2
+#define MAX_AD_NUM 12
 /*!
  *  @def    MSP_EXP432P401R_ADCName
  *  @brief  Enum of ADC channels on the MSP_EXP432P401R dev board

@@ -10,15 +10,9 @@
 
 #include "Board.h"
 
-extern uint8_t mec10_init();
-extern void mec10_close();
-
-extern void mec10_process();
-extern float get_mec10_temperature();
-extern char* get_mec10_temp_key();
-extern float get_mec10_humidity();
-extern char* get_mec10_hum_key();
-extern float get_mec10_ec();/*electrical conductivity*/
-extern char* get_mec10_ec_key();
+extern uint8_t mec10_open(uint8_t num);
+extern uint8_t mec10_close(uint8_t num);
+extern uint8_t mec10_process(uint8_t num);
+extern float mec10_get_data(uint8_t num, uint8_t key_num);
 
 #endif /* BASE_SENSORS_MEC10_MEC10_H_ */

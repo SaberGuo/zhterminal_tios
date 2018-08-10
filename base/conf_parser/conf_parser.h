@@ -10,14 +10,27 @@
 
 #include "Board.h"
 
+typedef struct data_item{
+    uint32_t port_num;
+    uint32_t sensor_type;
+    char* port;
+    char keys[MAX_KEYS][MAX_KEY_LEN];
+    struct data_item* next_data_item;
+}_data_item;
+
 typedef struct{
     uint32_t device_id;
     uint32_t device_config_id;
+    struct data_item* data_items;
+    struct data_item* image_items;
     char* img_capture_invl;
     char* data_capture_invl;
     char* data_upload_invl;
 }s_config;
 
+
+extern s_config g_config;
+extern void init_config_heap();
 extern uint8_t parse_config(const char* filename);
 extern uint8_t parse_crontab(char* invl,
                              uint8_t* minutes, uint8_t* minutes_num,

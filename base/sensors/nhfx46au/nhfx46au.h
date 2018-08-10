@@ -9,11 +9,10 @@
 #define BASE_SENSORS_NHFX46AU_NHFX46AU_H_
 #include "Board.h"
 
-extern void nhfx46au_init(void);
-
-extern float get_nhfx46au_value(void);
-
-extern char *get_nhfx46au_key(void);
+extern uint8_t nhfx46au_open(uint8_t num);
+extern uint8_t nhfx46au_close(uint8_t num);
+extern uint8_t nhfx46au_process(uint8_t num);
+extern float nhfx46au_get_data(uint8_t num, uint8_t key_num);
 
 
 #endif /* BASE_SENSORS_NHFX46AU_NHFX46AU_H_ */

@@ -27,72 +27,76 @@
 #include "base/gsm/gsm.h"
 
 
-_time_task_s update_time_task_info = {.task_minutes_num = 1, .task_hours_num = 12, .p_task_hours={0,2,4,6,8,10,12,14,16,18,20,22}, .p_task_minutes={1}};
+
+_time_task_s update_time_task_info = {.task_minutes_num = 1, .task_hours_num = 11, .p_task_hours={0,2,4,6,8,10,12,14,16,18,20}, .p_task_minutes={1}};
 char update_time_task_stack[TASKSTACKSIZE];
 Task_Struct update_time_task_struct;
 Semaphore_Struct semStruct_update_time;
 
 extern UART_Handle gsm_uart;
 
-void update_time_task(UArg arg){
-    //Semaphore_Handle semph_handler = (Semaphore_Handle)arg;
-    while(1){
-        Semaphore_pend(update_time_task_info.task_notify_semaphore_handler, BIOS_WAIT_FOREVER);
-        Semaphore_pend(semaphore_task, BIOS_WAIT_FOREVER);
-        /*power on*/
-        gsm_lock();
-        Task_sleep(200);
-        GPIO_write(Board_GPIO_POWER_KEY, Board_GPIO_LOW);
-        GPIO_write(Board_GPIO_DTR, Board_GPIO_LOW);
-        power_enable(ENA_DC5V);
-        power_enable(ENA_DC33V);
-        set_relay(RELAY_K_GSM);
+uint8_t update_time_ex(){
+    //gsm_open();
 
-        GPIO_write(Board_GPIO_POWER_KEY, Board_GPIO_HIGH);
-        delay(100000);
-        GPIO_write(Board_GPIO_POWER_KEY, Board_GPIO_LOW);
-        //Power_setPerformanceLevel(3);
+    if(gsm_pb_done(GSM_RETRY_NUM) == ZH_FAIL){
+        return ZH_FAIL;
+    }
+    Task_sleep(HUGE_TIME*3);
+    /*if(gsm_is_reg(GSM_RETRY_NUM) == ZH_FAIL){
+        return ZH_FAIL;
+    }
+    if(gsm_connect(GSM_RETRY_NUM) == ZH_FAIL){
+        return ZH_FAIL;
+    }*/
+    if(gsm_open_gps(GSM_RETRY_NUM) == ZH_FAIL){
+        return ZH_FAIL;
+    }
+    if(gsm_gps_info(GSM_RETRY_NUM) == ZH_FAIL){
+        return ZH_FAIL;
+    }
+    /*if(update_time() == ZH_FAIL)
+    {
+        LOG_MSG("update time fail!\n");
+        return ZH_FAIL;
+    }*/
+    if(gsm_disconnect(GSM_RETRY_NUM) == ZH_FAIL){
+        LOG_MSG("error for gsm disconnect\n");
+        return ZH_FAIL;
+    }
+    LOG_MSG("good for gsm disconnect\n");
+    return ZH_OK;
+}
+
+void update_time_task(UArg arg){
+    Semaphore_Handle semph_handler = (Semaphore_Handle)arg;
+    while(1){
+        Semaphore_pend(semph_handler, BIOS_WAIT_FOREVER);
+        //Semaphore_pend(semaphore_task, BIOS_WAIT_FOREVER);
+        /*power on*/
+        //gsm_lock();
+
         gsm_open();
 
-
-        if(gsm_pb_done(10) == 1){
-            goto UP_TIME_END;
+        if(update_time_ex() == ZH_FAIL){
+            LOG_MSG("update time ex fail!\n");
         }
-        Task_sleep(10000);
-        if(gsm_is_reg(20) == 1){
-            goto UP_TIME_END;
-        }
-        if(gsm_connect(10) == 1){
-            goto UP_TIME_END;
-        }
-        if(update_time() == 1)
-        {
-            LOG_MSG("update time fail!\n");
-            goto UP_TIME_END;
-        }
-        if(gsm_disconnect(10) == 1){
-            LOG_MSG("error for gsm disconnect\n");
-            goto UP_TIME_END;
-        }
-        LOG_MSG("good for gsm disconnect\n");
-UP_TIME_END:
+//UP_TIME_END:
         gsm_close();
 
-        /*power off*/
-        reset_relay(RELAY_K_GSM);
-        power_disable(ENA_DC5V|ENA_DC33V);
-        gsm_unlock();
-        Task_sleep(200);
-        Semaphore_post(semaphore_task);
-        //Power_setPerformanceLevel(0);
+        if(upload_image_ex(0) == ZH_FAIL){
+            LOG_MSG("upload images on update time task!\n");
+        }
+        gsm_close();
+
+        //gsm_unlock();
+        Task_sleep(LITTLE_TIME);
+        //Semaphore_post(semaphore_task);
+
     }
 }
 
 void init_update_time_task(){
-    /*Semaphore_Params semParams;
-    Semaphore_Params_init(&semParams);
-    semParams.instance->name = "uptime_sem";
-    Semaphore_construct(&semStruct_update_time, 0, &semParams);*/
+
     update_time_task_info.task_notify_semaphore_handler = semaphore_up_time_t;
 
     Task_Params taskParams;
