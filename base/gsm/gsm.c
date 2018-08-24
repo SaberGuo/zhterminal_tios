@@ -31,7 +31,7 @@ char *AT_CIPCLOSE="AT+CIPCLOSE=0\r\n";
 
 char *AT_CNMI="AT+CNMI=2,2\r\n";
 char *AT_CREG="AT+CREG?\r\n";
-char *AT_GPSHOT="AT+CGPSHOT\r\n";
+char *AT_GPSHOT="AT+CGPS=1,2\r\n";
 char *AT_GPSINFO="AT+CGPSINFO\r\n";
 char *AT_CIPHEAD="AT+CIPHEAD=1\r\n";
 char *AT_CIPSRIP="AT+CIPSRIP=0\r\n";
@@ -149,7 +149,7 @@ uint8_t _set_gsm_net(char *ip,char *com, uint8_t is_datamode)
         return atoi(pres+strlen(","));
     }
     if(is_datamode == 1){
-        pres = msg_at_recieve(30);//recieve send msg
+        pres = msg_at_recieve(100);//recieve send msg
         pres = msg_at_recieve(30);//recieve CONNECT 115200
         if(pres && strstr(pres,"CONNECT")){
             return ZH_OK;
@@ -445,7 +445,7 @@ uint8_t gsm_gps_info(uint8_t count){
 
             if(strlen(token)<3){
                 res = ZH_FAIL;
-                Task_sleep(10000);
+                Task_sleep(20000);
                 continue;
             }
             if(token){
@@ -457,7 +457,7 @@ uint8_t gsm_gps_info(uint8_t count){
             token=strtok(NULL,",");
             if(strlen(token)==0){
                 res = ZH_FAIL;
-                Task_sleep(10000);
+                Task_sleep(20000);
                 continue;
             }
             if(token){
@@ -469,7 +469,7 @@ uint8_t gsm_gps_info(uint8_t count){
             token=strtok(NULL,",");
             if(strlen(token)==0){
                 res = ZH_FAIL;
-                Task_sleep(10000);
+                Task_sleep(20000);
                 continue;
             }
             if(token){
@@ -488,7 +488,7 @@ uint8_t gsm_gps_info(uint8_t count){
             token=strtok(NULL,",");
             if(strlen(token)==0){
                 res = ZH_FAIL;
-                Task_sleep(10000);
+                Task_sleep(20000);
                 continue;
             }
             if(token){
@@ -503,7 +503,7 @@ uint8_t gsm_gps_info(uint8_t count){
             token=strtok(NULL,",");
             if(strlen(token)==0){
                 res = ZH_FAIL;
-                Task_sleep(10000);
+                Task_sleep(20000);
                 continue;
 
             }
@@ -524,7 +524,7 @@ uint8_t gsm_gps_info(uint8_t count){
             return ZH_OK;
         }
 
-        Task_sleep(10000);
+        Task_sleep(20000);
     }
     return ZH_FAIL;
 }
@@ -549,8 +549,9 @@ uint8_t gsm_open(){
     GPIO_write(Board_GPIO_POWER_KEY, Board_GPIO_HIGH);
     delay(100000);
     GPIO_write(Board_GPIO_POWER_KEY, Board_GPIO_LOW);
-
-    gsm_uart = UART_open(Board_UART_GSM, &gsm_uartParams);
+    if(gsm_uart == NULL){
+        gsm_uart = UART_open(Board_UART_GSM, &gsm_uartParams);
+    }
     if (gsm_uart == NULL) {
         LOG_MSG("gsm uart open fail!\n");
     	return ZH_FAIL;

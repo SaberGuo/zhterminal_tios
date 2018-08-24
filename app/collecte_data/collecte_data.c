@@ -64,7 +64,7 @@ uint8_t col_data_filename[20]={};
 
 uint8_t collecte_data_ex(){
     sensors_open();
-    Task_sleep(HUGE_TIME*2);
+    Task_sleep(HUGE_TIME*3);
     /*collect data*/
     sensors_process();
     char *pdata_str = sensors_construct();

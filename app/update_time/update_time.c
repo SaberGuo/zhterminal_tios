@@ -51,14 +51,20 @@ uint8_t update_time_ex(){
     if(gsm_open_gps(GSM_RETRY_NUM) == ZH_FAIL){
         return ZH_FAIL;
     }
-    if(gsm_gps_info(GSM_RETRY_NUM) == ZH_FAIL){
-        return ZH_FAIL;
+    if(gsm_gps_info(3) == ZH_FAIL){
+        if(gsm_is_reg(GSM_RETRY_NUM) == ZH_FAIL){
+            return ZH_FAIL;
+        }
+        if(gsm_connect(GSM_RETRY_NUM) == ZH_FAIL){
+            return ZH_FAIL;
+        }
+        if(update_time() == ZH_FAIL)
+        {
+            LOG_MSG("update time fail!\n");
+            return ZH_FAIL;
+        }
     }
-    /*if(update_time() == ZH_FAIL)
-    {
-        LOG_MSG("update time fail!\n");
-        return ZH_FAIL;
-    }*/
+
     if(gsm_disconnect(GSM_RETRY_NUM) == ZH_FAIL){
         LOG_MSG("error for gsm disconnect\n");
         return ZH_FAIL;

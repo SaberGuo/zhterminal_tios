@@ -197,19 +197,19 @@ void mainThread(UArg arg0){
     Task_sleep(200);
     /*debug for once*/
     /*update time*/
-    //gsm_open();
-    //update_time_ex();
-    //gsm_close();
+    gsm_open();
+    update_time_ex();
+    gsm_close();
     /*config update*/
     //gsm_open();
     //collecte_config_ex();
     //gsm_close();
     /*collect data*/
-    //collecte_data_ex();
+    collecte_data_ex();
     /*update data*/
-    //gsm_open();
-    //upload_data_ex();
-    //gsm_close();
+    gsm_open();
+    upload_data_ex();
+    gsm_close();
     /*collect image*/
     collecte_image_ex();
     /*init tasks*/
