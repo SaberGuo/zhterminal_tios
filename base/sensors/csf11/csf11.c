@@ -17,11 +17,17 @@
 
 
 #define CSF11_READ_SIZE 9
+#define MAX_SENSORS_SINGLE_PORT 5
+#define MAX_PORT_NUM 2
 
-const char csf11_modbus_command[]={0x02,0x03,0x00,0x00,0x00,0x02,0xc4,0x38};
+const char csf11_modbus_command[MAX_SENSORS_SINGLE_PORT][8]={{0x01, 0x03, 0x00, 0x00, 0x00, 0x02, 0xc4, 0x0b},
+                                                            {0x02, 0x03, 0x00, 0x00, 0x00, 0x02, 0xc4, 0x38},
+                                                            {0x03, 0x03, 0x00, 0x00, 0x00, 0x02, 0xc5, 0xe9},
+                                                            {0x04, 0x03, 0x00, 0x00, 0x00, 0x02, 0xc4, 0x5e},
+                                                            {0x05, 0x03, 0x00, 0x00, 0x00, 0x02, 0xc5, 0x8f},};
 
 float csf11_units[] = {10.0,10.0};
-uint16_t csf11_res_buffer[2][2];
+uint16_t csf11_res_buffer[MAX_SENSORS_SINGLE_PORT][2];
 UART_Params* csf11_uartParams = NULL;
 
 uint8_t csf11_open(uint8_t num){
@@ -35,24 +41,26 @@ uint8_t csf11_open(uint8_t num){
         csf11_uartParams->readEcho = UART_ECHO_OFF;
         csf11_uartParams->baudRate = 9600;
     }
-    return serial_port_open(num, csf11_uartParams);
+    return serial_port_open(num%MAX_PORT_NUM, csf11_uartParams);
 }
 uint8_t csf11_close(uint8_t num){
-    serial_port_close(num);
+    serial_port_close(num%MAX_PORT_NUM);
     return ZH_OK;
 }
 uint8_t csf11_process(uint8_t num){
-    get_modbus_datas(num,csf11_modbus_command, sizeof(csf11_modbus_command),
+    int index1 = num%MAX_PORT_NUM;// num for port
+    int index2 = num/MAX_PORT_NUM;// num for sensor
+    get_modbus_datas(index1,csf11_modbus_command[index2], sizeof(csf11_modbus_command[index2]),
                                 CSF11_READ_SIZE,
-                                csf11_res_buffer[num],sizeof(csf11_res_buffer[num])/sizeof(uint16_t));
+                                csf11_res_buffer[index2],sizeof(csf11_res_buffer[index2])/sizeof(uint16_t));
     delay(1000);
-    return get_modbus_datas(num,csf11_modbus_command, sizeof(csf11_modbus_command),
+    return get_modbus_datas(index1,csf11_modbus_command[index2], sizeof(csf11_modbus_command[index2]),
                             CSF11_READ_SIZE,
-                            csf11_res_buffer[num],sizeof(csf11_res_buffer[num])/sizeof(uint16_t));
+                            csf11_res_buffer[index2],sizeof(csf11_res_buffer[index2])/sizeof(uint16_t));
 }
 float csf11_get_data(uint8_t num, uint8_t key_num){
     if(key_num>=2){
         return ZH_OK;
     }
-    return (float)(((int16_t)csf11_res_buffer[num][key_num])/csf11_units[key_num]);
+    return (float)(((int16_t)csf11_res_buffer[num/MAX_PORT_NUM][key_num])/csf11_units[key_num]);
 }

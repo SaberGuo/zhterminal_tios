@@ -115,16 +115,6 @@ const ADCMSP432_HWAttrsV1 adcMSP432HWAttrs[MSP_EXP432P401R_ADCCOUNT] = {
         .refVoltage = ADCMSP432_REF_VOLTAGE_INT_2_5V,
         .resolution = ADC_14BIT
     },
-    {
-        .adcPin = ADCMSP432_P4_5_A8,
-        .refVoltage = ADCMSP432_REF_VOLTAGE_INT_2_5V,
-        .resolution = ADC_14BIT
-    },
-    {
-        .adcPin = ADCMSP432_P4_4_A9,
-        .refVoltage = ADCMSP432_REF_VOLTAGE_INT_2_5V,
-        .resolution = ADC_14BIT
-    }
 };
 
 const ADC_Config ADC_config[MSP_EXP432P401R_ADCCOUNT] = {
@@ -168,16 +158,6 @@ const ADC_Config ADC_config[MSP_EXP432P401R_ADCCOUNT] = {
         .object = &adcMSP432Objects[MSP_EXP432P401R_ADC7],
         .hwAttrs = &adcMSP432HWAttrs[MSP_EXP432P401R_ADC7]
     },
-    {
-        .fxnTablePtr = &ADCMSP432_fxnTable,
-        .object = &adcMSP432Objects[MSP_EXP432P401R_ADC8],
-        .hwAttrs = &adcMSP432HWAttrs[MSP_EXP432P401R_ADC8]
-    },
-    {
-        .fxnTablePtr = &ADCMSP432_fxnTable,
-        .object = &adcMSP432Objects[MSP_EXP432P401R_ADC9],
-        .hwAttrs = &adcMSP432HWAttrs[MSP_EXP432P401R_ADC9]
-    }
 };
 
 const uint_least8_t ADC_count = MSP_EXP432P401R_ADCCOUNT;
@@ -471,9 +451,11 @@ GPIO_PinConfig gpioPinConfigs[] = {
     GPIOMSP432_P4_7| GPIO_CFG_OUT_STD | GPIO_CFG_OUT_STR_HIGH | GPIO_CFG_OUT_LOW,
     /*MSP_EXP432P401R_GPIO_AD7*/
     GPIOMSP432_P4_6| GPIO_CFG_OUT_STD | GPIO_CFG_OUT_STR_HIGH | GPIO_CFG_OUT_LOW,
-    /*MSP_EXP432P401R_GPIO_AD8*/
+
+
+    /*MSP_EXP432P401R_GPIO_CTRL1*/
     GPIOMSP432_P4_5| GPIO_CFG_OUT_STD | GPIO_CFG_OUT_STR_HIGH | GPIO_CFG_OUT_LOW,
-    /*MSP_EXP432P401R_GPIO_AD9*/
+    /*MSP_EXP432P401R_GPIO_CTRL2*/
     GPIOMSP432_P4_4| GPIO_CFG_OUT_STD | GPIO_CFG_OUT_STR_HIGH | GPIO_CFG_OUT_LOW,
     //others
     /*MSP_EXP432P401R_GPIO_P1_4*/

@@ -88,6 +88,24 @@ uint8_t get_modbus_nocrc_datas(uint8_t num,
     }
     return ZH_OK;
 }
+uint8_t send_modbus_command(uint8_t num, char* command, uint8_t command_size){
+    int32_t write_num = 0;
+    if(num>=MAX_UART_NUM){
+        LOG_MSG("get_modbus_datas:num is larger %d",num);
+        return ZH_FAIL;
+    }
+    if(set_serial_flag(num, SERIAL_WRITE) == ZH_FAIL){
+        LOG_MSG("uart flag set error for num is larger %d",num);
+        return ZH_FAIL;
+    }
+    write_num = UART_write(uart_handler[num],command, command_size);
+    if(write_num != command_size){
+        LOG_MSG("uart write error!");
+        return ZH_FAIL;
+    }
+    delay(10000);
+    return ZH_OK;
+}
 
 uint8_t get_modbus_datas(uint8_t num,
                       char* command, uint8_t command_size,

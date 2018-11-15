@@ -24,6 +24,9 @@
 #include "./ms10_volt/ms10_volt.h"
 #include "./csf11/csf11.h"
 #include "./zwinsoft/zwinsoft.h"
+#include "./diams/diams.h"
+#include "./zxws6p/zxws6p.h"
+#include "./wbsensor/wbsensor.h"
 
 #include "base/conf_parser/conf_parser.h"
 #include "base/rt_clock/rt_clock.h"
@@ -56,7 +59,10 @@ const char sensor_type_strs[SENSOR_TYPE_COUNT][20]={
                                    "ms10vh",
                                    "wxt520",
                                    "csf11",
-                                   "zwinsoft"
+                                   "zwinsoft",
+                                   "diams",
+                                   "zxws6p",
+                                   "wbsensor"
 };
 
 _sensor_config sensor_configs[SENSOR_TYPE_COUNT]={
@@ -143,7 +149,28 @@ _sensor_config sensor_configs[SENSOR_TYPE_COUNT]={
                                                    .sensor_close = zwinsoft_close,
                                                    .sensor_process = zwinsoft_process,
                                                    .sensor_get_data = zwinsoft_get_data
-                                                  }
+                                                  },
+                                                  /*diams*/
+                                                  {
+                                                   .sensor_open = diams_open,
+                                                   .sensor_close = diams_close,
+                                                   .sensor_process = diams_process,
+                                                   .sensor_get_data = diams_get_data
+                                                  },
+                                                  /*zxws6p*/
+                                                  {
+                                                   .sensor_open = zxws6p_open,
+                                                   .sensor_close = zxws6p_close,
+                                                   .sensor_process = zxws6p_process,
+                                                   .sensor_get_data = zxws6p_get_data
+                                                  },
+                                                  /*wbsensor*/
+                                                  {
+                                                   .sensor_open = wbsensor_open,
+                                                   .sensor_close = wbsensor_close,
+                                                   .sensor_process = wbsensor_process,
+                                                   .sensor_get_data = wbsensor_get_data
+                                                  },
 };
 
 void read_nvs_sensors(void){
@@ -151,6 +178,7 @@ void read_nvs_sensors(void){
     if(sensor_sign ==0){
         return;
     }
+
     NVS_read(nvsHandle, NVS_SENSORS_PWBUF_OFFSET, (void *) p_w_buffer, sizeof(p_w_buffer));
     NVS_read(nvsHandle, NVS_SENSORS_PRBUF_OFFSET, (void *) p_r_buffer, sizeof(p_r_buffer));
     NVS_read(nvsHandle, NVS_SENSORS_BUF_OFFSET, (void *) sensor_data_buffer, MAX_SENSOR_DATA*SENSOR_BUFFER_SIZE);

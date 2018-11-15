@@ -30,12 +30,12 @@
 
 #define SELF_CAM_TIMEOUT (100)
 
-#define IP_MAX_NUM 2
+#define IP_MAX_NUM 4
 
 #define HISI_TIMEOUT 120
 
-uint8_t c_des_ip[IP_MAX_NUM][4] = {{192,168,1,10},{192,168,1,11}};
-uint8_t c_socket_num[IP_MAX_NUM] = {0,0};
+uint8_t c_des_ip[IP_MAX_NUM][4] = {{192,168,1,10},{192,168,1,11},{192,168,1,12},{192,168,1,13}};
+uint8_t c_socket_num[IP_MAX_NUM] = {0,0,0,0};
 uint16_t c_des_port = 4444;
 
 
@@ -223,6 +223,7 @@ int32_t hisi_tcpc_run(uint8_t num, char *buffer,char *file_name, uint8_t *sign, 
     }
     return ret;
 }
+
 uint8_t hisi_capture(uint8_t num, char *pbuffer, char *file_name, uint32_t *psize){
     int8_t sign = SELF_CAM_PROCESS;
     time_t start_sec = get_seconds();

@@ -81,7 +81,6 @@ void upload_data_task(UArg arg){
     Semaphore_Handle semph_handler = (Semaphore_Handle)arg;
     while(1){
         Semaphore_pend(semph_handler, BIOS_WAIT_FOREVER);
-        //Semaphore_pend(semaphore_task, BIOS_WAIT_FOREVER);
         /*power on*/
 
         upload_data_th = start_upload_data_timer();

@@ -27,8 +27,8 @@ _camera_config camera_configs[CAMERA_TYPE_COUNT]={
 //char camera_file_names[CAMERA_MAX_NUM][40];
 //uint32_t camera_file_sizes[CAMERA_MAX_NUM];
 _image_info image_infos[CAMERA_MAX_NUM][CAMERA_BUFFER_NUM];
-uint8_t p_cw_buffer[CAMERA_MAX_NUM] = {0,0};
-uint8_t p_cr_buffer[CAMERA_MAX_NUM] = {0,0};
+uint8_t p_cw_buffer[CAMERA_MAX_NUM] = {0,0,0,0};
+uint8_t p_cr_buffer[CAMERA_MAX_NUM] = {0,0,0,0};
 
 char camera_buffer[MAX_BUFFER];
 

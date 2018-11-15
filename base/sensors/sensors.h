@@ -31,6 +31,9 @@ typedef enum sensor_Type{
     SENSOR_WXT520,//空气温湿度，降雨，风速风向,serial
     SENSOR_CSF11,
     SENSOR_ZWINSOFT,//空气质量传感器, CO, O3, NO2,SO2, PM2.5,PM10
+    SENSOR_DIAMS,
+    SENSOR_ZXWS6P, //智翔宇全要素, 风速(m/s),风向(°),温度(℃),湿度(%),大气压力(hpa),分钟雨量(mm),小时雨量(mm),24 小时雨量(mm),测量雨量累加值(mm) ,太阳光强度 (w/m2)
+    SENSOR_WBSENSOR,//苏州蛙视，水质传感器, 溶解氧DO、浊度、pH，电导率
     SENSOR_TYPE_COUNT
 }sensor_Type_Enum;
 

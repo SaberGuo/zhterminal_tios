@@ -99,6 +99,7 @@ uint8_t update_time(){
     }
     return ZH_FAIL;
 }
+_image_info piif;
 
 void upload_image(char* key, uint8_t channel, char *file_name, DWORD file_size, uint32_t ts){
     char* p = NULL;
@@ -134,11 +135,12 @@ void upload_image(char* key, uint8_t channel, char *file_name, DWORD file_size, 
                 remove(file_name);
             }
             else{
-                _image_info iif;
-                memcpy(iif.filename,file_name, strlen(file_name));
-                iif.seconds = ts;
-                iif.size = file_size;
-                save_image_info(channel, iif);
+
+                strcpy(piif.filename, file_name);
+                //memcpy(iif.filename, file_name, strlen(file_name));
+                piif.seconds = ts;
+                piif.size = file_size;
+                save_image_info(channel, piif);
             }
         }
     }

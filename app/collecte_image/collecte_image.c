@@ -51,7 +51,7 @@ char *get_image_file_info(DWORD* fsize, uint32_t* ts, bool is_first){
 
 uint32_t col_image_count = 0;
 
-#define COL_IMAGE_TIMEOUT 900 //6 min
+#define COL_IMAGE_TIMEOUT 1200 //6 min
 
 void colimage_timerCallback(Timer_Handle myHandle){
     if(col_image_count++>COL_IMAGE_TIMEOUT){
@@ -223,12 +223,12 @@ void collecte_image_task(UArg arg){
     Timer_Handle col_image_th;
     while(1){
         Semaphore_pend(semph_handler, BIOS_WAIT_FOREVER);
-        //Semaphore_pend(semaphore_task, BIOS_WAIT_FOREVER);
+        Semaphore_pend(semaphore_task, BIOS_WAIT_FOREVER);
         col_image_th = start_col_image_timer();
         /*get the time and gps*/
-        gsm_open();
-        update_time_ex();
-        gsm_close();
+        //gsm_open();
+        //update_time_ex();
+        //gsm_close();
 
         /*camera power on*/
         if(collecte_image_ex() == ZH_FAIL){
@@ -238,7 +238,7 @@ void collecte_image_task(UArg arg){
         stop_col_image_timer(col_image_th);
 
         Task_sleep(LITTLE_TIME);
-        //Semaphore_post(semaphore_task);
+        Semaphore_post(semaphore_task);
     }
 }
 

@@ -87,7 +87,6 @@ void gpio_clear(){
     GPIO_write(MSP_EXP432P401R_GPIO_AD5,Board_GPIO_LOW);
     GPIO_write(MSP_EXP432P401R_GPIO_AD6,Board_GPIO_LOW);
     GPIO_write(MSP_EXP432P401R_GPIO_AD7,Board_GPIO_LOW);
-    GPIO_write(MSP_EXP432P401R_GPIO_AD8,Board_GPIO_LOW);
 
     GPIO_write(MSP_EXP432P401R_GPIO_GSM_RELAY_SET,Board_GPIO_LOW);
     GPIO_write(MSP_EXP432P401R_GPIO_GSM_RELAY_RESET,Board_GPIO_LOW);
@@ -173,18 +172,24 @@ void mainThread(UArg arg0){
     power_enable(ENA_DC5V);
     power_enable(ENA_DC33V);
 
-    Task_sleep(200);
+
     reset_relay(RELAY_K_GSM);
+
     Task_sleep(200);
     reset_relay(RELAY_K_CAMERA);
+
     Task_sleep(200);
     reset_relay(RELAY_K_SENSOR);
+
     Task_sleep(200);
     reset_relay(RELAY_K_IO);
     Task_sleep(200);
 
     power_disable(ENA_DC5V);
     power_disable(ENA_DC33V);
+    Task_sleep(200);
+    power_enable(ENA_DC5V);
+    power_enable(ENA_DC33V);
     /*parse config & setting task info*/
     enable_sd();
     if(open_sd() == 1){

@@ -33,7 +33,7 @@ Task_Struct col_data_task_struct;
 
 uint32_t col_data_count = 0;
 
-#define COL_DATA_TIMEOUT 80 //80s
+#define COL_DATA_TIMEOUT 180 //80s
 
 
 void coldata_timerCallback(Timer_Handle myHandle){
@@ -139,11 +139,10 @@ void collecte_data_task(UArg arg){
     Timer_Handle col_data_th;
     while(1){
         Semaphore_pend(semph_handler, BIOS_WAIT_FOREVER);
-        //Semaphore_pend(semaphore_task, BIOS_WAIT_FOREVER);
+        Semaphore_pend(semaphore_task, BIOS_WAIT_FOREVER);
         /*init sensors ports*/
 
         col_data_th = start_col_data_timer();
-
         collecte_data_ex();
         stop_col_data_timer(col_data_th);
         col_data_th = start_col_data_timer();
@@ -151,11 +150,14 @@ void collecte_data_task(UArg arg){
 
         if(upload_data_ex() == ZH_FAIL){
             LOG_MSG("upload data fail!\n");
-
         }
         gsm_close();
         stop_col_data_timer(col_data_th);
-        //Semaphore_post(semaphore_task);
+
+        gsm_open();
+        update_time_ex();
+        gsm_close();
+        Semaphore_post(semaphore_task);
     }
 
 }

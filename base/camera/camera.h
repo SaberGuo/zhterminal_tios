@@ -10,7 +10,7 @@
 
 #include "Board.h"
 
-#define CAMERA_MAX_NUM 2
+#define CAMERA_MAX_NUM 4
 
 #define CAMERA_BUFFER_NUM 4
 
