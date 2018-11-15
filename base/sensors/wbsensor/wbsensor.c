@@ -5,6 +5,15 @@
  *      Author: saber
  */
 #include "wbsensor.h"
+#include <stdint.h>
+#include <stddef.h>
+#include <string.h>
+
+/* Driver Header files */
+#include <ti/drivers/GPIO.h>
+#include <ti/drivers/UART.h>
+#include <ti/sysbios/knl/Task.h>
+#include "../uart/uart.h"
 
 #define WBSENSOR_READ_SIZE 21
 #define MAX_CTRL_PORT 2
@@ -57,20 +66,20 @@ uint8_t wbsensor_process(uint8_t num){
     delay(300);
     open_output();
     //delay for a time
-    Task_delay(4*60*1000); //4min
+    Task_sleep(4*60*1000); //4min
     //close the input wait for the tank empty
     close_input();
-    Task_delay(4*60*1000);
+    Task_sleep(4*60*1000);
     //close the output and open the input
     close_output();
     delay(300);
     open_input();
     //wait for the tank full
-    Task_delay(4*60*1000);
+    Task_sleep(4*60*1000);
     close_input();
     //collect the data
     Task_sleep(30000);//delay for 30s
-    get_modbus_datas(num,wbsensor_modbus_command, sizeof(wbsensor_modbus_command),
+    get_modbus_datas(num, wbsensor_modbus_command, sizeof(wbsensor_modbus_command),
                      WBSENSOR_READ_SIZE,
                      wbsensor_res_buffer[num],sizeof(wbsensor_res_buffer[num])/sizeof(uint16_t));
     //return default status
