@@ -15,12 +15,12 @@
 #include <ti/sysbios/knl/Task.h>
 #include "../uart/uart.h"
 
-#define WBSENSOR_READ_SIZE 21
+#define WBSENSOR_READ_SIZE 57
 #define MAX_CTRL_PORT 2
 #define CTRL_INPUT_PORT 0// 控制抽水泵 AD8
 #define CTRL_OUTPUT_PORT 1//控制排水阀 AD9
 uint8_t wdsensor_power_ports[MAX_CTRL_PORT]={Board_GPIO_CTRL1,Board_GPIO_CTRL2};
-const char wbsensor_modbus_command[]={0x01,0x03,0x00,0x36,0x00,0x08,0xA4,0x02};
+const char wbsensor_modbus_command[]={0x01,0x03,0x00,0x32,0x00,0x1A,0x65,0xCE};
 const char wbsensor_modbus_ctrl[]={0x01,0x10,0x00,0x19,0x00,0x01,0x02,0x00,0x00,0xA4,0x59};
 float wbsensor_units[] = {1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0};
 uint16_t wbsensor_res_buffer[2][20];
