@@ -310,13 +310,13 @@ void reset_uart_ports(){
 }
 void sensors_close(){
 
-    reset_relay(RELAY_K_SENSOR);
+    /*reset_relay(RELAY_K_SENSOR);
     Task_sleep(LITTLE_TIME);
     reset_relay(RELAY_K_IO);
     Task_sleep(LITTLE_TIME);
     power_disable(ENA_DC5V);
     Task_sleep(LITTLE_TIME);
-    power_disable(ENA_DC33V);
+    power_disable(ENA_DC33V);*/
 
 
     _data_item* pdi = g_config.data_items;
