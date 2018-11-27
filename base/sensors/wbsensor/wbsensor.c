@@ -66,19 +66,19 @@ uint8_t wbsensor_process(uint8_t num){
     delay(300);
     open_output();
     //delay for a time
-    Task_sleep(4*60*1000); //4min
+    Task_sleep(1*60*100); //4min
     //close the input wait for the tank empty
     close_input();
-    Task_sleep(4*60*1000);
+    Task_sleep(1*60*100);
     //close the output and open the input
     close_output();
     delay(300);
     open_input();
     //wait for the tank full
-    Task_sleep(4*60*1000);
+    Task_sleep(1*60*100);
     close_input();
     //collect the data
-    Task_sleep(30000);//delay for 30s
+    Task_sleep(3000);//delay for 30s
     get_modbus_datas(num, wbsensor_modbus_command, sizeof(wbsensor_modbus_command),
                      WBSENSOR_READ_SIZE,
                      wbsensor_res_buffer[num],sizeof(wbsensor_res_buffer[num])/sizeof(uint16_t));
@@ -92,10 +92,10 @@ float wbsensor_get_data(uint8_t num, uint8_t key_num){
         //float tt = 192.96875;
     uint8_t buf[4]={0};
         //memcpy(buf, (uint8_t *)(&tt),4);
-    buf[0] = (uint8_t)(wbsensor_res_buffer[num][key_num*2+1]>>8);
-    buf[1] = (uint8_t)(wbsensor_res_buffer[num][key_num*2+1]&0x00ff);
-    buf[2] = (uint8_t)(wbsensor_res_buffer[num][key_num*2]>>8);
-    buf[3] = (uint8_t)(wbsensor_res_buffer[num][key_num*2]&0x00ff);
+    buf[2] = (uint8_t)(wbsensor_res_buffer[num][key_num*2+1]>>8);
+    buf[3] = (uint8_t)(wbsensor_res_buffer[num][key_num*2+1]&0x00ff);
+    buf[0] = (uint8_t)(wbsensor_res_buffer[num][key_num*2]>>8);
+    buf[1] = (uint8_t)(wbsensor_res_buffer[num][key_num*2]&0x00ff);
         //memcpy(buf, (char *)(zxws6p_res_buffer[num][key_num*2+1]), 2);
         //memcpy(buf+2, (char *)(zxws6p_res_buffer[num][key_num*2]), 2);
     float* temp = (float*)buf;
