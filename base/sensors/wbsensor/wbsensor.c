@@ -28,16 +28,16 @@ uint16_t wbsensor_res_buffer[2][20];
 UART_Params* wbsensor_uartParams = NULL;
 
 void open_input(){
-    GPIO_write(wdsensor_power_ports[CTRL_INPUT_PORT], Board_GPIO_HIGH);
-}
-void close_input(){
     GPIO_write(wdsensor_power_ports[CTRL_INPUT_PORT], Board_GPIO_LOW);
 }
+void close_input(){
+    GPIO_write(wdsensor_power_ports[CTRL_INPUT_PORT], Board_GPIO_HIGH);
+}
 void open_output(){
-    GPIO_write(wdsensor_power_ports[CTRL_OUTPUT_PORT], Board_GPIO_HIGH);
+    GPIO_write(wdsensor_power_ports[CTRL_OUTPUT_PORT], Board_GPIO_LOW);
 }
 void close_output(){
-    GPIO_write(wdsensor_power_ports[CTRL_OUTPUT_PORT], Board_GPIO_LOW);
+    GPIO_write(wdsensor_power_ports[CTRL_OUTPUT_PORT], Board_GPIO_HIGH);
 }
 
 uint8_t wbsensor_open(uint8_t num){
@@ -92,10 +92,10 @@ float wbsensor_get_data(uint8_t num, uint8_t key_num){
         //float tt = 192.96875;
     uint8_t buf[4]={0};
         //memcpy(buf, (uint8_t *)(&tt),4);
-    buf[3] = (uint8_t)(wbsensor_res_buffer[num][key_num*2+1]>>8);
-    buf[2] = (uint8_t)(wbsensor_res_buffer[num][key_num*2+1]&0x00ff);
-    buf[1] = (uint8_t)(wbsensor_res_buffer[num][key_num*2]>>8);
-    buf[0] = (uint8_t)(wbsensor_res_buffer[num][key_num*2]&0x00ff);
+    buf[0] = (uint8_t)(wbsensor_res_buffer[num][key_num*2+1]>>8);
+    buf[1] = (uint8_t)(wbsensor_res_buffer[num][key_num*2+1]&0x00ff);
+    buf[2] = (uint8_t)(wbsensor_res_buffer[num][key_num*2]>>8);
+    buf[3] = (uint8_t)(wbsensor_res_buffer[num][key_num*2]&0x00ff);
         //memcpy(buf, (char *)(zxws6p_res_buffer[num][key_num*2+1]), 2);
         //memcpy(buf+2, (char *)(zxws6p_res_buffer[num][key_num*2]), 2);
     float* temp = (float*)buf;

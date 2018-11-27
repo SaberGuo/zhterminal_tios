@@ -571,7 +571,7 @@ void gsm_close(){
     }
     gsm_port_clear();
     reset_relay(RELAY_K_GSM);
-    power_disable(ENA_DC5V);
-    power_disable(ENA_DC33V);
+    //power_disable(ENA_DC5V);
+    //power_disable(ENA_DC33V);
 
 }

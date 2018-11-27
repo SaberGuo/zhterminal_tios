@@ -185,9 +185,7 @@ void mainThread(UArg arg0){
     reset_relay(RELAY_K_IO);
     Task_sleep(200);
 
-    power_disable(ENA_DC5V);
-    power_disable(ENA_DC33V);
-    Task_sleep(200);
+
     power_enable(ENA_DC5V);
     power_enable(ENA_DC33V);
     /*parse config & setting task info*/
