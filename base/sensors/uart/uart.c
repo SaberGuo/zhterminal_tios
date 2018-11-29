@@ -9,12 +9,12 @@
 #include <ti/sysbios/knl/Task.h>
 #include "../sensors_comm.h"
 
-
+#define MAX_UART_LEN 60
 
 UART_Handle uart_handler[MAX_UART_NUM]={NULL, NULL};
 uint8_t uart_nums[MAX_UART_NUM]={Board_UART_485_0,Board_UART_485_1};
 uint8_t uart_flags[MAX_UART_NUM]={Board_GPIO_485_0_RE, Board_GPIO_485_1_RE};
-uint8_t uart_buffer[MAX_UART_NUM][50];
+uint8_t uart_buffer[MAX_UART_NUM][MAX_UART_LEN];
 
 uint8_t serial_port_open(uint8_t num,UART_Params* param){
     if(uart_handler[num] == NULL){
@@ -50,7 +50,7 @@ uint8_t get_modbus_nocrc_datas(uint8_t num,
         LOG_MSG("get_modbus_datas:num is larger %d",num);
         return ZH_FAIL;
     }
-    memset(uart_buffer[num], 0, 50);
+    memset(uart_buffer[num], 0, MAX_UART_LEN);
     if(set_serial_flag(num, SERIAL_WRITE) == ZH_FAIL){
         LOG_MSG("uart flag set error for num is larger %d",num);
         return ZH_FAIL;
@@ -117,7 +117,7 @@ uint8_t get_modbus_datas(uint8_t num,
         LOG_MSG("get_modbus_datas:num is larger %d",num);
         return ZH_FAIL;
     }
-    memset(uart_buffer[num], 0, 50);
+    memset(uart_buffer[num], 0, MAX_UART_LEN);
     if(set_serial_flag(num, SERIAL_WRITE) == ZH_FAIL){
         LOG_MSG("uart flag set error for num is larger %d",num);
         return ZH_FAIL;

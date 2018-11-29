@@ -23,7 +23,7 @@ uint8_t wdsensor_power_ports[MAX_CTRL_PORT]={Board_GPIO_CTRL1,Board_GPIO_CTRL2};
 const char wbsensor_modbus_command[]={0x01,0x03,0x00,0x32,0x00,0x1A,0x65,0xCE};
 const char wbsensor_modbus_ctrl[]={0x01,0x10,0x00,0x19,0x00,0x01,0x02,0x00,0x00,0xA4,0x59};
 float wbsensor_units[] = {1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0};
-uint16_t wbsensor_res_buffer[2][20];
+uint16_t wbsensor_res_buffer[2][30];
 
 UART_Params* wbsensor_uartParams = NULL;
 
@@ -82,6 +82,9 @@ uint8_t wbsensor_process(uint8_t num){
     get_modbus_datas(num, wbsensor_modbus_command, sizeof(wbsensor_modbus_command),
                      WBSENSOR_READ_SIZE,
                      wbsensor_res_buffer[num],sizeof(wbsensor_res_buffer[num])/sizeof(uint16_t));
+    get_modbus_datas(num, wbsensor_modbus_command, sizeof(wbsensor_modbus_command),
+                         WBSENSOR_READ_SIZE,
+                         wbsensor_res_buffer[num],sizeof(wbsensor_res_buffer[num])/sizeof(uint16_t));
     //return default status
 
 }
