@@ -9,7 +9,7 @@
 #include <ti/sysbios/knl/Task.h>
 #include "../sensors_comm.h"
 
-#define MAX_UART_LEN 60
+#define MAX_UART_LEN 80
 
 UART_Handle uart_handler[MAX_UART_NUM]={NULL, NULL};
 uint8_t uart_nums[MAX_UART_NUM]={Board_UART_485_0,Board_UART_485_1};

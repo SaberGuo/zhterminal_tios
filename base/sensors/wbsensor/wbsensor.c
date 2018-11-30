@@ -15,12 +15,14 @@
 #include <ti/sysbios/knl/Task.h>
 #include "../uart/uart.h"
 
-#define WBSENSOR_READ_SIZE 57
+#define WBS_RETRY_NUM 3
+
+#define WBSENSOR_READ_SIZE 61
 #define MAX_CTRL_PORT 2
 #define CTRL_INPUT_PORT 0// 控制抽水泵 AD8
 #define CTRL_OUTPUT_PORT 1//控制排水阀 AD9
 uint8_t wdsensor_power_ports[MAX_CTRL_PORT]={Board_GPIO_CTRL1,Board_GPIO_CTRL2};
-const char wbsensor_modbus_command[]={0x01,0x03,0x00,0x32,0x00,0x1A,0x65,0xCE};
+const char wbsensor_modbus_command[]={0x01,0x03,0x00,0x30,0x00,0x1C,0x44,0x0C};
 const char wbsensor_modbus_ctrl[]={0x01,0x10,0x00,0x19,0x00,0x01,0x02,0x00,0x00,0xA4,0x59};
 float wbsensor_units[] = {1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0};
 uint16_t wbsensor_res_buffer[2][30];
@@ -28,16 +30,16 @@ uint16_t wbsensor_res_buffer[2][30];
 UART_Params* wbsensor_uartParams = NULL;
 
 void open_input(){
-    GPIO_write(wdsensor_power_ports[CTRL_INPUT_PORT], Board_GPIO_LOW);
-}
-void close_input(){
     GPIO_write(wdsensor_power_ports[CTRL_INPUT_PORT], Board_GPIO_HIGH);
 }
+void close_input(){
+    GPIO_write(wdsensor_power_ports[CTRL_INPUT_PORT], Board_GPIO_LOW);
+}
 void open_output(){
-    GPIO_write(wdsensor_power_ports[CTRL_OUTPUT_PORT], Board_GPIO_LOW);
+    GPIO_write(wdsensor_power_ports[CTRL_OUTPUT_PORT], Board_GPIO_HIGH);
 }
 void close_output(){
-    GPIO_write(wdsensor_power_ports[CTRL_OUTPUT_PORT], Board_GPIO_HIGH);
+    GPIO_write(wdsensor_power_ports[CTRL_OUTPUT_PORT], Board_GPIO_LOW);
 }
 
 uint8_t wbsensor_open(uint8_t num){
@@ -61,6 +63,7 @@ uint8_t wbsensor_close(uint8_t num){
     return ZH_OK;
 }
 uint8_t wbsensor_process(uint8_t num){
+    int i = 0;
     //open the input and output
     open_input();
     delay(300);
@@ -79,12 +82,14 @@ uint8_t wbsensor_process(uint8_t num){
     close_input();
     //collect the data
     Task_sleep(3000);//delay for 30s
-    get_modbus_datas(num, wbsensor_modbus_command, sizeof(wbsensor_modbus_command),
-                     WBSENSOR_READ_SIZE,
-                     wbsensor_res_buffer[num],sizeof(wbsensor_res_buffer[num])/sizeof(uint16_t));
-    get_modbus_datas(num, wbsensor_modbus_command, sizeof(wbsensor_modbus_command),
+    for(i = 0; i<WBS_RETRY_NUM;i++){
+        if(ZH_FAIL == get_modbus_datas(num, wbsensor_modbus_command, sizeof(wbsensor_modbus_command),
                          WBSENSOR_READ_SIZE,
-                         wbsensor_res_buffer[num],sizeof(wbsensor_res_buffer[num])/sizeof(uint16_t));
+                         wbsensor_res_buffer[num],sizeof(wbsensor_res_buffer[num])/sizeof(uint16_t))){
+            break;
+        }
+    }
+
     //return default status
 
 }
