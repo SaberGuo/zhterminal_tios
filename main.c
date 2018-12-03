@@ -188,6 +188,8 @@ void mainThread(UArg arg0){
 
     power_enable(ENA_DC5V);
     power_enable(ENA_DC33V);
+
+
     /*parse config & setting task info*/
     enable_sd();
     if(open_sd() == 1){
@@ -276,7 +278,7 @@ int main(){
     init_spisd();
     sensors_init();
     init_gsm();
-    gpio_clear();
+    //gpio_clear();
 
     BIOS_start();
     return (0);
