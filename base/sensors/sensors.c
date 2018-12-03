@@ -199,6 +199,8 @@ void write_nvs_sensors(void){
 void sensors_init(void){
     read_nvs_sensors();
     di_init(0);
+    close_input();
+    close_output();
 }
 
 void sensors_open(void){
