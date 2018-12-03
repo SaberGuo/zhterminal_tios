@@ -30,6 +30,7 @@ uint16_t wbsensor_res_buffer[2][30];
 UART_Params* wbsensor_uartParams = NULL;
 
 void open_input(){
+
     GPIO_write(wdsensor_power_ports[CTRL_INPUT_PORT], Board_GPIO_HIGH);
 }
 void close_input(){
@@ -69,19 +70,19 @@ uint8_t wbsensor_process(uint8_t num){
     delay(300);
     open_output();
     //delay for a time
-    Task_sleep(1*60*100); //4min
+    Task_sleep(2*60*1000); //4min
     //close the input wait for the tank empty
     close_input();
-    Task_sleep(1*60*100);
+    Task_sleep(1*60*1000);
     //close the output and open the input
     close_output();
     delay(300);
     open_input();
     //wait for the tank full
-    Task_sleep(1*60*100);
+    Task_sleep(4*60*1000);
     close_input();
     //collect the data
-    Task_sleep(3000);//delay for 30s
+    Task_sleep(2*60*1000);//delay for 2min
     for(i = 0; i<WBS_RETRY_NUM;i++){
         if(ZH_FAIL == get_modbus_datas(num, wbsensor_modbus_command, sizeof(wbsensor_modbus_command),
                          WBSENSOR_READ_SIZE,
