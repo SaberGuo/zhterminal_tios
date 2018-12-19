@@ -15,7 +15,7 @@
 #include <ti/sysbios/knl/Task.h>
 #include "../uart/uart.h"
 
-#define WBS_RETRY_NUM 3
+#define WBS_RETRY_NUM 5
 
 #define WBSENSOR_READ_SIZE 61
 #define MAX_CTRL_PORT 2
@@ -84,18 +84,19 @@ uint8_t wbsensor_process(uint8_t num){
     //collect the data
     Task_sleep(2*60*1000);//delay for 2min
     for(i = 0; i<WBS_RETRY_NUM;i++){
-        if(ZH_FAIL == get_modbus_datas(num, wbsensor_modbus_command, sizeof(wbsensor_modbus_command),
+        if(ZH_FAIL != get_modbus_datas(num, wbsensor_modbus_command, sizeof(wbsensor_modbus_command),
                          WBSENSOR_READ_SIZE,
                          wbsensor_res_buffer[num],sizeof(wbsensor_res_buffer[num])/sizeof(uint16_t))){
             break;
         }
+        Task_sleep(100);
     }
 
     //return default status
 
 }
 float wbsensor_get_data(uint8_t num, uint8_t key_num){
-    if(key_num>=4){
+    if(key_num>=20){
         return ZH_OK;
     }
         //float tt = 192.96875;
