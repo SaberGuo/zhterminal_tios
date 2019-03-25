@@ -27,6 +27,7 @@
 #include "./diams/diams.h"
 #include "./zxws6p/zxws6p.h"
 #include "./wbsensor/wbsensor.h"
+#include "./adc345/adc345.h"
 
 #include "base/conf_parser/conf_parser.h"
 #include "base/rt_clock/rt_clock.h"
@@ -62,7 +63,8 @@ const char sensor_type_strs[SENSOR_TYPE_COUNT][20]={
                                    "zwinsoft",
                                    "diams",
                                    "zxws6p",
-                                   "wbsensor"
+                                   "wbsensor",
+                                   "adc345"
 };
 
 _sensor_config sensor_configs[SENSOR_TYPE_COUNT]={
@@ -171,6 +173,13 @@ _sensor_config sensor_configs[SENSOR_TYPE_COUNT]={
                                                    .sensor_process = wbsensor_process,
                                                    .sensor_get_data = wbsensor_get_data
                                                   },
+                                                  /*adc345*/
+                                                  {
+                                                   .sensor_open = adc345_open,
+                                                   .sensor_close = adc345_close,
+                                                   .sensor_process = adc345_process,
+                                                   .sensor_get_data = adc345_get_data
+                                                  }
 };
 
 void read_nvs_sensors(void){
@@ -310,13 +319,13 @@ void reset_uart_ports(){
 }
 void sensors_close(){
 
-    /*reset_relay(RELAY_K_SENSOR);
+    reset_relay(RELAY_K_SENSOR);
     Task_sleep(LITTLE_TIME);
     reset_relay(RELAY_K_IO);
     Task_sleep(LITTLE_TIME);
     power_disable(ENA_DC5V);
     Task_sleep(LITTLE_TIME);
-    power_disable(ENA_DC33V);*/
+    power_disable(ENA_DC33V);
 
 
     _data_item* pdi = g_config.data_items;

@@ -34,6 +34,7 @@ typedef enum sensor_Type{
     SENSOR_DIAMS,
     SENSOR_ZXWS6P, //智翔宇全要素, 风速(m/s),风向(°),温度(℃),湿度(%),大气压力(hpa),分钟雨量(mm),小时雨量(mm),24 小时雨量(mm),测量雨量累加值(mm) ,太阳光强度 (w/m2)
     SENSOR_WBSENSOR,//苏州蛙视，水质传感器, 溶解氧DO、浊度、pH，电导率
+    SENSOR_ADC345,//dfsdfsd
     SENSOR_TYPE_COUNT
 }sensor_Type_Enum;
 

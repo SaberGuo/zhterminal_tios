@@ -196,7 +196,7 @@ void mainThread(UArg arg0){
     Task_sleep(200);
     config_all_tasks();
     close_sd();
-    disable_sd();
+
     Task_sleep(200);
     /*debug for once*/
     /*update time*/
