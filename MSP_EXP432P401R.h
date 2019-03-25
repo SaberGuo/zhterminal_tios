@@ -67,7 +67,7 @@ extern "C" {
 #define MAX_BUFFER_P 768
 #define SENSOR_BUFFER 256
 
-#define MAX_KEYS 8
+#define MAX_KEYS 15
 #define MAX_KEY_LEN 20
 
 #define ZH_OK 0
