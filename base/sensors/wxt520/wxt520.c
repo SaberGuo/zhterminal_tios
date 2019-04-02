@@ -55,13 +55,14 @@ uint8_t vaisal_fcn(){
         {
             strstrn=strstr(token,vaisal_datas[i].sign);
             if(*strstrn){
-                vaisal_datas[i].value+=atof(token+3);
-                if(++vaisal_datas[i].pv == MAX_REV_NUM){
-                    vaisal_datas[i].avg_value =vaisal_datas[i].value/vaisal_datas[i].pv;
-                    vaisal_datas[i].value = 0;
-                    vaisal_datas[i].pv = 0;
-                    vaisal_datas[i].completed = 1;
-                }
+                vaisal_datas[i].value=atof(token+3);
+                //vaisal_datas[i].value+=atof(token+3);
+                //if(++vaisal_datas[i].pv == MAX_REV_NUM){
+                //    vaisal_datas[i].avg_value =vaisal_datas[i].value/vaisal_datas[i].pv;
+                //    vaisal_datas[i].value = 0;
+                //    vaisal_datas[i].pv = 0;
+                //    vaisal_datas[i].completed = 1;
+                //}
             }
         }
     }
@@ -77,6 +78,7 @@ uint8_t vaisal_process(){
 	uint8_t res;
 	vaisal_status vaisal_stat = HEADER_1;
 	uint16_t count = 0;
+	va_pbuffer = 0;
 	for(;count<300;count++){
 		UART_read(vaisal_uart, &res, 1);
 		switch(vaisal_stat){
@@ -111,11 +113,7 @@ uint8_t vaisal_process(){
 	                //deal with the data format
 	                vaisal_stat = HEADER_1;
 
-	                if(vaisal_fcn()){
-	                    //finished
-	                    return ZH_OK;
-
-	                }
+	                vaisal_fcn();
 	                memset(va_res_buffer,'\0',sizeof(va_res_buffer));
 	                va_pbuffer=0;
 	            }
@@ -152,5 +150,5 @@ uint8_t wxt520_process(uint8_t num){
     return vaisal_process();
 }
 float wxt520_get_data(uint8_t num, uint8_t key_num){
-    return vaisal_datas[key_num].avg_value;
+    return vaisal_datas[key_num].value;
 }
