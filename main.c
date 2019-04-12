@@ -173,16 +173,16 @@ void mainThread(UArg arg0){
     power_enable(ENA_DC33V);
 
 
-    reset_relay(RELAY_K_GSM);
+    set_relay(RELAY_K_GSM);
 
     Task_sleep(200);
-    reset_relay(RELAY_K_CAMERA);
+    set_relay(RELAY_K_CAMERA);
 
     Task_sleep(200);
-    reset_relay(RELAY_K_SENSOR);
+    set_relay(RELAY_K_SENSOR);
 
     Task_sleep(200);
-    reset_relay(RELAY_K_IO);
+    set_relay(RELAY_K_IO);
     Task_sleep(200);
 
 
@@ -202,9 +202,9 @@ void mainThread(UArg arg0){
     Task_sleep(200);
     /*debug for once*/
     /*update time*/
-    gsm_open();
-    update_time_ex();
-    gsm_close();
+    //gsm_open();
+    //update_time_ex();
+    //gsm_close();
     /*config update*/
     //gsm_open();
     //collecte_config_ex();
