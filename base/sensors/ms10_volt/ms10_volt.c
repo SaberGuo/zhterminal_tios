@@ -13,7 +13,7 @@
 #define MS10_VOLT_HUM_MIN_VALUE 0.0
 #define MS10_VOLT_HUM_MAX_VALUE 100.0
 
-#define MS10_VOLT_REF_VOLT 2.0
+#define MS10_VOLT_REF_VOLT 1.15
 
 ADC_Params*   ms10_volt_temp_params;
 ADC_Params*   ms10_volt_hum_params;

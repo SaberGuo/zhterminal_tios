@@ -87,6 +87,7 @@ void gpio_clear(){
     GPIO_write(MSP_EXP432P401R_GPIO_AD5,Board_GPIO_LOW);
     GPIO_write(MSP_EXP432P401R_GPIO_AD6,Board_GPIO_LOW);
     GPIO_write(MSP_EXP432P401R_GPIO_AD7,Board_GPIO_LOW);
+    GPIO_write(MSP_EXP432P401R_GPIO_AD8,Board_GPIO_LOW);
 
     GPIO_write(MSP_EXP432P401R_GPIO_GSM_RELAY_SET,Board_GPIO_LOW);
     GPIO_write(MSP_EXP432P401R_GPIO_GSM_RELAY_RESET,Board_GPIO_LOW);
@@ -220,14 +221,14 @@ void mainThread(UArg arg0){
     /*init tasks*/
     init_collecte_data_task();
     //init_upload_data_task();
-    //init_collecte_config_task();
+    init_collecte_config_task();
     init_collecte_image_task();
     //init_update_time_task();
 
     /*add time task list*/
     add_time_task(&collecte_data_task_info);
     //add_time_task(&upload_data_task_info);
-    //add_time_task(&collecte_config_task_info);
+    add_time_task(&collecte_config_task_info);
     add_time_task(&collecte_image_task_info);
     //add_time_task(&update_time_task_info);
 

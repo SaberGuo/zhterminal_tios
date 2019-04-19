@@ -41,7 +41,7 @@ uint8_t zwinsoft_close(uint8_t num){
     return ZH_OK;
 }
 uint8_t zwinsoft_process(uint8_t num){
-    Task_sleep(60000);
+    Task_sleep(100000);
     return get_modbus_nocrc_datas(num,zwinsoft_modbus_command, sizeof(zwinsoft_modbus_command),
                             zwinsoft_read_size,
                                zwinsoft_res_buffer,sizeof(zwinsoft_res_buffer)/sizeof(uint16_t));

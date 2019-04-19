@@ -16,6 +16,7 @@
 #include "./davis_rain/davis_rain.h"
 #include "./mec10/mec10.h"
 #include "./nhzd10/nhzd10.h"
+#include "./nhgh09bu/nhgh09bu.h"
 #include "./nhfx46au/nhfx46au.h"
 #include "./nhfs45bu/nhfs45bu.h"
 #include "./nh122/nh122.h"
@@ -23,9 +24,11 @@
 #include "./th10s/th10s.h"
 #include "./ms10_volt/ms10_volt.h"
 #include "./csf11/csf11.h"
+#include "./csf11/csf12.h"
 #include "./zwinsoft/zwinsoft.h"
 #include "./diams/diams.h"
 #include "./zxws6p/zxws6p.h"
+#include "./nhfs15bu/nhfs15bu.h"
 #include "./wbsensor/wbsensor.h"
 
 #include "base/conf_parser/conf_parser.h"
@@ -54,14 +57,17 @@ const char sensor_type_strs[SENSOR_TYPE_COUNT][20]={
                                    "nhfs45bu",
                                    "nhfx46au",
                                    "nhzd10",
+                                   "nhgh09bu",
                                    "th10s",
                                    "ms10vt",
                                    "ms10vh",
                                    "wxt520",
                                    "csf11",
+                                   "csf12",
                                    "zwinsoft",
                                    "diams",
                                    "zxws6p",
+								   "nhfs15bu",
                                    "wbsensor"
 };
 
@@ -108,6 +114,13 @@ _sensor_config sensor_configs[SENSOR_TYPE_COUNT]={
                                                    .sensor_process = nhzd10_process,
                                                    .sensor_get_data = nhzd10_get_data
                                                   },
+                                                  /*nhgh09bu*/
+                                                  {
+                                                   .sensor_open = nhgh09bu_open,
+                                                   .sensor_close = nhgh09bu_close,
+                                                   .sensor_process = nhgh09bu_process,
+                                                   .sensor_get_data = nhgh09bu_get_data
+                                                  },
                                                   /*th10s*/
                                                   {
                                                    .sensor_open =th10s_open,
@@ -143,6 +156,13 @@ _sensor_config sensor_configs[SENSOR_TYPE_COUNT]={
                                                     .sensor_process = csf11_process,
                                                     .sensor_get_data = csf11_get_data
                                                   },
+                                                  /*csf12*/
+                                                  {
+                                                    .sensor_open = csf12_open,
+                                                    .sensor_close = csf12_close,
+                                                    .sensor_process = csf12_process,
+                                                    .sensor_get_data = csf12_get_data
+                                                  },
                                                   /*zwinsoft*/
                                                   {
                                                    .sensor_open = zwinsoft_open,
@@ -163,6 +183,13 @@ _sensor_config sensor_configs[SENSOR_TYPE_COUNT]={
                                                    .sensor_close = zxws6p_close,
                                                    .sensor_process = zxws6p_process,
                                                    .sensor_get_data = zxws6p_get_data
+                                                  },
+                                                  /*nhfs15bu*/
+                                                  {
+                                                   .sensor_open = nhfs15bu_open,
+                                                   .sensor_close = nhfs15bu_close,
+                                                   .sensor_process = nhfs15bu_process,
+                                                   .sensor_get_data = nhfs15bu_get_data
                                                   },
                                                   /*wbsensor*/
                                                   {
@@ -199,6 +226,8 @@ void write_nvs_sensors(void){
 void sensors_init(void){
     read_nvs_sensors();
     di_init(0);
+    close_input();
+    close_output();
 }
 
 void sensors_open(void){

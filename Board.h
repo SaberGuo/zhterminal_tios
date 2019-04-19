@@ -165,6 +165,7 @@ extern "C" {
 #define Board_UART_485_0            MSP_EXP432P401R_UART_485_0
 #define Board_UART_485_1            MSP_EXP432P401R_UART_485_1
 #define Board_UART_GSM				MSP_EXP432P401R_UART_GSM
+#define Board_UART_DEBUG            MSP_EXP432P401R_UART_DEBUG
 
 #define Board_WATCHDOG0             MSP_EXP432P401R_WATCHDOG
 #define Board_WATCHDOG1             MSP_EXP432P401R_IMAGE_WATCHDOG

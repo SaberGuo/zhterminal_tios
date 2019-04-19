@@ -25,14 +25,17 @@ typedef enum sensor_Type{
     SENSOR_NHFS45BU,//风速,vol
     SENSOR_NHFX46AU,//风向,vol
     SENSOR_NHZD10,//光照,vol
+    SENSOR_NHGH09BU,//光合有效,vol
     SENSOR_TH10S,//土壤温湿度,serial
     SENSOR_MS10VT,//土壤温度,vol
     SENSOR_MS10VH,//土壤湿度,vol
     SENSOR_WXT520,//空气温湿度，降雨，风速风向,serial
     SENSOR_CSF11,
+    SENSOR_CSF12,
     SENSOR_ZWINSOFT,//空气质量传感器, CO, O3, NO2,SO2, PM2.5,PM10
     SENSOR_DIAMS,
     SENSOR_ZXWS6P, //智翔宇全要素, 风速(m/s),风向(°),温度(℃),湿度(%),大气压力(hpa),分钟雨量(mm),小时雨量(mm),24 小时雨量(mm),测量雨量累加值(mm) ,太阳光强度 (w/m2)
+    SENSOR_NHFS15BU, //总辐射，电压测量，电阻分压原理，测量电压0-25v输入5v输出0-5v
     SENSOR_WBSENSOR,//苏州蛙视，水质传感器, 溶解氧DO、浊度、pH，电导率
     SENSOR_TYPE_COUNT
 }sensor_Type_Enum;

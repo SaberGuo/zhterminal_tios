@@ -32,7 +32,7 @@
 
 #define IP_MAX_NUM 4
 
-#define HISI_TIMEOUT 120
+#define HISI_TIMEOUT 240
 
 uint8_t c_des_ip[IP_MAX_NUM][4] = {{192,168,1,10},{192,168,1,11},{192,168,1,12},{192,168,1,13}};
 uint8_t c_socket_num[IP_MAX_NUM] = {0,0,0,0};

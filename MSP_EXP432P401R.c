@@ -115,6 +115,16 @@ const ADCMSP432_HWAttrsV1 adcMSP432HWAttrs[MSP_EXP432P401R_ADCCOUNT] = {
         .refVoltage = ADCMSP432_REF_VOLTAGE_INT_2_5V,
         .resolution = ADC_14BIT
     },
+    {
+        .adcPin = ADCMSP432_P4_5_A8,
+        .refVoltage = ADCMSP432_REF_VOLTAGE_INT_2_5V,
+        .resolution = ADC_14BIT
+    },
+    {
+        .adcPin = ADCMSP432_P4_4_A9,
+        .refVoltage = ADCMSP432_REF_VOLTAGE_INT_2_5V,
+        .resolution = ADC_14BIT
+    }
 };
 
 const ADC_Config ADC_config[MSP_EXP432P401R_ADCCOUNT] = {
@@ -158,6 +168,16 @@ const ADC_Config ADC_config[MSP_EXP432P401R_ADCCOUNT] = {
         .object = &adcMSP432Objects[MSP_EXP432P401R_ADC7],
         .hwAttrs = &adcMSP432HWAttrs[MSP_EXP432P401R_ADC7]
     },
+    {
+        .fxnTablePtr = &ADCMSP432_fxnTable,
+        .object = &adcMSP432Objects[MSP_EXP432P401R_ADC8],
+        .hwAttrs = &adcMSP432HWAttrs[MSP_EXP432P401R_ADC8]
+    },
+    {
+        .fxnTablePtr = &ADCMSP432_fxnTable,
+        .object = &adcMSP432Objects[MSP_EXP432P401R_ADC9],
+        .hwAttrs = &adcMSP432HWAttrs[MSP_EXP432P401R_ADC9]
+    }
 };
 
 const uint_least8_t ADC_count = MSP_EXP432P401R_ADCCOUNT;
@@ -961,7 +981,21 @@ const UARTMSP432_HWAttrsV1 uartMSP432HWAttrs[MSP_EXP432P401R_UARTCOUNT] = {
      .ringBufSize = sizeof(uartMSP432RingBuffer[MSP_EXP432P401R_UART_GSM]),
      .rxPin = UARTMSP432_P2_2_UCA1RXD,
      .txPin = UARTMSP432_P2_3_UCA1TXD
-    }
+    },
+    {
+     .baseAddr = EUSCI_A2_BASE,
+     .intNum = INT_EUSCIA2,
+     .intPriority = (~0),
+     .clockSource = EUSCI_A_UART_CLOCKSOURCE_SMCLK,
+     .bitOrder = EUSCI_A_UART_LSB_FIRST,
+     .numBaudrateEntries = sizeof(uartMSP432Baudrates) /
+        sizeof(UARTMSP432_BaudrateConfig),
+     .baudrateLUT = uartMSP432Baudrates,
+     .ringBufPtr  = uartMSP432RingBuffer[MSP_EXP432P401R_UART_DEBUG],
+     .ringBufSize = sizeof(uartMSP432RingBuffer[MSP_EXP432P401R_UART_DEBUG]),
+     .rxPin = UARTMSP432_P3_2_UCA1RXD,
+     .txPin = UARTMSP432_P3_3_UCA1TXD
+    },
 
 };
 
@@ -980,7 +1014,12 @@ const UART_Config UART_config[MSP_EXP432P401R_UARTCOUNT] = {
         .fxnTablePtr = &UARTMSP432_fxnTable,
         .object = &uartMSP432Objects[MSP_EXP432P401R_UART_GSM],
         .hwAttrs = &uartMSP432HWAttrs[MSP_EXP432P401R_UART_GSM]
-        }
+    },
+    {
+        .fxnTablePtr = &UARTMSP432_fxnTable,
+        .object = &uartMSP432Objects[MSP_EXP432P401R_UART_DEBUG],
+        .hwAttrs = &uartMSP432HWAttrs[MSP_EXP432P401R_UART_DEBUG]
+    }
 };
 
 const uint_least8_t UART_count = MSP_EXP432P401R_UARTCOUNT;
